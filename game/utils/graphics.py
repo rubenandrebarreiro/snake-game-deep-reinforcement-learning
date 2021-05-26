@@ -77,16 +77,16 @@ def plot_board(game_board, current_score, current_step, done, full_screen=True):
                 # for the current given Step taken
                 py_plot.title("Snake Game\n", color="green")
 
-                # Plot the Board of the Snake Game
-                py_plot.imshow(game_board)
+            # Plot the Board of the Snake Game
+            py_plot.imshow(game_board)
 
-                # Show the Plot of the Board of the Snake Game,
-                # with no blocking
-                py_plot.show(block=False)
+            # Show the Plot of the Board of the Snake Game,
+            # with no blocking
+            py_plot.show(block=False)
 
-                # Pause/Freeze the Plot of the Board of the Snake Game,
-                # for 0.25 seconds
-                py_plot.pause(0.25)
+            # Pause/Freeze the Plot of the Board of the Snake Game,
+            # for 0.25 seconds
+            py_plot.pause(0.25)
 
         # Close the Plot of the Board of the Snake Game
         py_plot.close()
