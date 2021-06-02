@@ -199,11 +199,11 @@ def execute_snake_agent(snake_game_environment):
 
     # Build the Learning Model for the Learning Agent,
     # according to the space of the CartPole Environment
-    model = compute_model_for_snake_agent(environment.observation_space.shape, environment.action_space.n)
+    model = compute_model_for_snake_agent((snake_game_environment.height, snake_game_environment.width), 3)  # TODO - Ver action space - 3 actions ?? (go straight, turn left, turn right)
 
     # Build the Learning Model for the Target Agent,
     # according to the space of the CartPole Environment
-    target_model = compute_model_for_snake_agent(environment.observation_space.shape, environment.action_space.n)
+    target_model = compute_model_for_snake_agent((snake_game_environment.height, snake_game_environment.width), 3)  # TODO - Ver action space - 3 actions ?? (go straight, turn left, turn right)
 
     # Set the Weights of the Learning Model for the Target Agent,
     # according to its Weights
