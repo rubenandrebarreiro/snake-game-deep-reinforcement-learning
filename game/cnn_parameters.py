@@ -1,0 +1,5 @@
+OPTIMISERS = ["ADAM"]
+
+KERNEL_SIZES = [8, 4]
+
+STRIDES = [4, 2]

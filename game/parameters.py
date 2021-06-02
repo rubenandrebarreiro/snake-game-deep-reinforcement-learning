@@ -1,1 +1,0 @@
-OPTIMISERS = ["ADAM"]
