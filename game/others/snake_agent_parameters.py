@@ -22,14 +22,23 @@ Snake Agent Module for the the Project
 
 # Constants and Flags
 
+# The Maximum Memory capacity for the Snake Agent
+MAX_MEMORY = 100000
+
+# The size of the Batch of Examples of Observations
+BATCH_SIZE = 1000
+
+# The Learning Rate for the CNN (Convolutional Neural Network) Model
+LEARNING_RATE = 0.001
+
 # The List of Optimisers to use,
-# in the CNN (Convolutional Neural Network)
+# in the CNN (Convolutional Neural Network) Model
 OPTIMISERS_LIST = ["ADAM"]
 
 # The List of Kernel Sizes to use,
-# in the CNN (Convolutional Neural Network)
+# in the CNN (Convolutional Neural Network) Model
 KERNEL_SIZES_LIST = [8, 4]
 
 # The List of Strides to use,
-# in the CNN (Convolutional Neural Network)
+# in the CNN (Convolutional Neural Network) Model
 STRIDES_LIST = [4, 2]
