@@ -226,20 +226,13 @@ def execute_snake_agent(snake_game_environment):
 
         # Initialise the Boolean Flag of the information about
         # the Training is done or not
-        done = False
+        game_done = False
 
         # While the Training
-        while not done:
+        while not game_done:
 
             # Increment the Steps to update the Target Model
             steps_to_update_target_model += 1
-
-            # Dummy Boolean Flag
-            # (it is always True, it can be changed)
-            if True:
-
-                # Render the Environment
-                environment.render()
 
             # Generate a Random Number
             random_number = numpy.random.rand()
@@ -248,7 +241,7 @@ def execute_snake_agent(snake_game_environment):
             # the Threshold for the Random Number generated
             if random_number <= epsilon:
 
-                # Sample an action for a possible action
+                # Sample a possible Action
                 action = environment.action_space.sample()
 
             # If the Random Number generated is greater than
