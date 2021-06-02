@@ -31,10 +31,6 @@ import numpy as numpy
 # from the NumPy Library, with the random_int alias
 from numpy.random import randint as random_int
 
-# Import the Plot Board Function,
-# from the Utils.Graphics customised Module
-from game.utils.graphics import plot_board
-
 
 # Class for the Snake Game
 class SnakeGame:
@@ -63,18 +59,18 @@ class SnakeGame:
     # Create the Apples on the Board of the Game
     def create_apples(self):
 
-        # Create a new apple away from the snake"
+        # Create a new Apple away from the Snake
         while len(self.apples) < self.food_amount:
 
             # Generate a random coordinate (x, y) for the current Apple
-            apple = (random_int(0, (self.width - 1)), random_int(0, (self.height - 1)))
+            apple = (random_int(0, (self.height - 1)), random_int(0, (self.width - 1)))
 
             # While the generated random coordinate (x, y) for the current Apple
             # is a position already filled by the Snake
             while apple in self.snake:
 
                 # Generate another random coordinate (x, y) for the current Apple
-                apple = (random_int(0, (self.width - 1)), random_int(0, (self.height - 1)))
+                apple = (random_int(0, (self.height - 1)), random_int(0, (self.width - 1)))
 
             # Append the current generated Apple to the list of them
             self.apples.append(apple)
@@ -155,15 +151,15 @@ class SnakeGame:
 
         # Check if game is over by colliding with edge or itself
         # just need to check snake's head
-        if((x == -1) or (x == self.width)
-            or (y == -1) or (y == self.height)
-            or (x, y) in self.snake[1:]):
+        if ((x == -1) or (x == self.height)
+                or (y == -1) or (y == self.width)
+                or (x, y) in self.snake[1:]):
 
             # Set the Game as done
             self.done = True
 
     # Function for the Snake take an action
-    def step(self, action):        
+    def step(self, action):
 
         # Move snake/game by one step.
         # The resulting action can be:
@@ -191,9 +187,9 @@ class SnakeGame:
             # Set the direction of the Snake as 0
             self.direction = 0
 
-        # The Snake will grow through the defined direction
-        # Two steps: grow + remove last
-        self.grow_snake(self.direction)
+            # The Snake will grow through the defined direction
+            # Two steps: grow + remove last
+            self.grow_snake(self.direction)
 
         # If the Snake eaten one of the Apples
         if self.snake[0] in self.apples:
@@ -229,7 +225,7 @@ class SnakeGame:
             x, y = self.snake[0]
 
             # Sum to the reward, the (x,y) coordinates of the Grass
-            reward += self.grass[y, x]
+            reward += self.grass[x, y]
 
             # Set the Grass in the (x,y) coordinates of the Snake's Head, as 0
             self.grass[y, x] = 0
@@ -273,7 +269,6 @@ class SnakeGame:
 
                 # If the y coordinate of the Apple is equal to the current row
                 if y == i:
-
                     # Print an "A" in the place of the Apple
                     line = (line[:x] + "A" + line[(x + 1):])
 
@@ -282,7 +277,6 @@ class SnakeGame:
 
                 # If the y coordinate of the Snake is equal to the current row
                 if y == i:
-
                     # Print a "X" in the place of the Snake's body part
                     line = (line[:x] + "X" + line[(x + 1):])
 
@@ -327,14 +321,12 @@ class SnakeGame:
 
         # If there is some maximum threshold for the Grass growing
         if self.max_grass > 0:
-
             # Paint that (x,y) coordinate as Green,
             # according to the threshold for the Grass growing
-            self.board[:, :, 1] = (self.grass/self.max_grass * 0.3)
+            self.board[:, :, 1] = (self.grass / self.max_grass * 0.3)
 
         # If the Game is not done
         if not self.done:
-
             # Retrieve the Snake's Head
             x, y = self.snake[0]
 
@@ -376,47 +368,11 @@ class SnakeGame:
 
 
 # Just run this if this file is the main
-if __name__ == "__main__":
-
-    # Print the information about the start of the Snake Game
-    print("Snake Game starting...")
-    print("\n")
+if __name__ == '__main__':
 
     # Create the Board (m x n) for the Snake Game
-    game = SnakeGame(30, 30)
-
-    # Initialise the current Step of the Snake Game
-    step = 0
+    game = SnakeGame(20, 20)
 
     # Print the information of the Board for the Snake Game,
     # in the current Step
-    print("Board of the Snake Game, for the step {}:".format((step + 1)))
     game.print_state()
-    print("\n")
-
-    # Infinite Loop
-    while True:
-
-        # Generate a random integer to represent the action to take
-        action_to_take = random_int(-1, 2)
-
-        # Make the Snake take the generated action, for the current Step
-        board_state, _, done, score_dict = game.step(action_to_take)
-
-        # Print the information of the Board for the Snake Game,
-        # in the current Step
-        print("Board of the Snake Game, for the step {}:".format((step + 1)))
-        game.print_state()
-        print("\n")
-
-        # Plot the Board for the Snake Game, in the current Step
-        plot_board(board_state, score_dict["score"], step, done, True)
-
-        # If the Game is done
-        if done:
-
-            # Break the infinite loop, if the Game is done
-            break
-
-        # Increment one step
-        step += 1
