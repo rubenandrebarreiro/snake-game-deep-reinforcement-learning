@@ -28,23 +28,8 @@ import os as operative_system
 # Disable all the Debugging Logs from TensorFlow Library
 operative_system.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-# Import the TensorFlow Library, with tensorflow alias
-import tensorflow as tensorflow
-
 # From the TensorFlow.Keras Module, import the Sequential Learning Model
 from tensorflow.keras import Sequential
-
-# From the TensorFlow.Keras.Layers Module, import the Convolutional 2D Layer
-from tensorflow.keras.layers import Conv2D
-
-# From the TensorFlow.Keras.Layers Module, import the Maximum Pooling 2D Layer
-from tensorflow.keras.layers import MaxPooling2D
-
-# From the TensorFlow.Keras.Layers Module, import the Activation Layer
-from tensorflow.keras.layers import Activation
-
-# From the TensorFlow.Keras.Layers Module, import the Dense Layer
-from tensorflow.keras.layers import Dense
 
 # From the Collections Library, import the Deque Module
 from collections import deque
@@ -66,48 +51,8 @@ training_episodes = 300
 # Function to compute the Learning Model for the Snake Agent
 def compute_model_for_snake_agent(current_state_shape, actions_vector_shape):
 
-    # Set the Learning Rate as 0.001
-    learning_rate = 0.001
-
-    # Retrieve the He Uniform Initializer for the Model
-    initializer = tensorflow.keras.initializers.HeUniform()
-
     # Initialise the Sequential Model
     model = Sequential()
-
-    # Add a 2D Convolutional Layer,
-    # with 16 Units, a 8x8 Kernel, a 4x4 Stride and a He Uniform Initializer,
-    # for the Shape of the Current State Vector
-    model.add(Conv2D(16, kernel_size=(8, 8), strides=(4, 4),
-                     kernel_inializer=initializer, input_shape=current_state_shape))
-
-    # Add a Maximum 2D Pooling Layer, with 2x2 Pool Size
-    model.add(MaxPooling2D((2, 2)))
-
-    # Add a ReLU Activation Layer
-    model.add(Activation("relu"))
-
-    # Add a 2D Convolutional Layer,
-    # with 32 Units, a 4x4 Kernel, a 2x2 Stride and a He Uniform Initializer
-    model.add(Conv2D(32, kernel_size=(4, 4), strides=(2, 2),
-                     kernel_inializer=initializer))
-
-    # Add a Maximum 2D Pooling Layer, with 2x2 Pool Size
-    model.add(MaxPooling2D((2, 2)))
-
-    # Add a ReLU Activation Layer, with 2x2 Pool Size
-    model.add(Activation("relu"))
-
-    # Add a Dense Layer, with 256 Units, with the He Uniform Initializer
-    model.add(Dense(256, kernel_initializer=initializer))
-
-    # Add a Dense Layer, for the Shape of the Actions Vector
-    model.add(Dense(actions_vector_shape))
-
-    # Compile the Sequential Model, with the Huber Loss, using the Adam Optimiser
-    model.compile(loss=tensorflow.keras.losses.Huber(),
-                  optimizer=tensorflow.keras.optimizers.Adam(learning_rate=learning_rate),
-                  metrics=["accuracy"])
 
     # Return the Learning Model
     return model

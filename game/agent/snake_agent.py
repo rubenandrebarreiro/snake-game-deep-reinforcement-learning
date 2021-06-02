@@ -22,29 +22,50 @@ Snake Agent Module for the the Project
 
 # Import the Libraries and Packages
 
-# From the Collections Library, import the Deque
+# From the Collections Library,
+# import the Deque
 from collections import deque
 
-# From the Game.Snake_Game Module import the Snake Game
+# From the Game.Snake_Game Module,
+# import the Snake Game
 from game.snake_game import SnakeGame
 
-# From the Game.Snake_Game Module import the Snake Game
+# From the Game.Agent.Common.Snake_Trainer Module,
+# import the Snake Game Q-Learning Trainer
 from game.agent.common.snake_trainer import SnakeAgentQLearningTrainer
 
+# From the Game.Agent.Common.Snake_Model Module,
+# import the Snake Agent CNN (Convolutional Neural Network) Model
 from game.agent.common.snake_model import SnakeAgentCNNModel
 
+# From the Game.Utils.Plotting_Helper,
+# import the Dynamic Training Plot
 from game.utils.plotting_helper import dynamic_training_plot
 
+# From the NumPy Library, import the Argmax function
 from numpy import argmax
 
+# From the NumPy Library, import the Random function
 from numpy import random
 
-from game.others.cnn_parameters import OPTIMISERS_LIST
+# From the Game.Others.Snake_Agent_Parameters,
+# import the Maximum Capacity for the Memory (Deque) of the Snake Agent
+from game.others.snake_agent_parameters import MAX_MEMORY
 
-MAX_MEMORY = 100000
+# From the Game.Others.Snake_Agent_Parameters,
+# import the Learning Rate for
+# the CNN (Convolutional Neural Network) Model
+from game.others.snake_agent_parameters import LEARNING_RATE
 
-BATCH_SIZE = 1000
-LEARNING_RATE = 0.001
+# From the Game.Others.Snake_Agent_Parameters,
+# import the list of Optimisers to be used in
+# the CNN (Convolutional Neural Network) Model
+from game.others.snake_agent_parameters import OPTIMISERS_LIST
+
+# From the Game.Others.Snake_Agent_Parameters,
+# import the Size of the Batch to be used for the Training of
+# the CNN (Convolutional Neural Network) Model
+from game.others.snake_agent_parameters import BATCH_SIZE
 
 
 # Class for the Snake Agent
@@ -63,29 +84,52 @@ class SnakeAgent:
         # Set the Gamma value (i.e., the Discount Reward)
         self.gamma_discount_factor = 0.9
 
-        # Set the
+        # Set the Memory of the Snake Agent,
+        # for the Deque structure with the Maximum Capacity defined for it
         self.memory = deque(maxlen=MAX_MEMORY)
 
+        # Create the Q-Learning Trainer for the Snake Agent
         self.snake_q_learning_trainer = \
             SnakeAgentQLearningTrainer(self.snake_cnn_model, learning_rate=LEARNING_RATE,
                                        gamma_discount_factor=self.gamma_discount_factor)
 
         # TODO - Confirmar Input
+        # Initialise the CNN (Convolutional Neural Network) for the Snake Agent
         self.snake_cnn_model = \
             SnakeAgentCNNModel(OPTIMISERS_LIST[0].lower(), self.snake_q_learning_trainer.optimizer, 11, [16, 32], 3)
 
+    # Function to remember a given tuple of the state of the Snake Agent,
+    # by saving it in its Memory
     def remember(self, observation, action, reward, new_observation, done):
+
+        # Append the given tuple of the state of the Snake Agent to its Memory
         self.memory.append([observation, action, reward, new_observation, done])
 
+    # Function to train the Long (Replay/Experiences) Memory of the Snake Agent
     def train_long_replay_experiences_memory(self):
+
+        # If the Memory of the Snake Agent has
+        # the sufficient number of examples for sampling a Batch
         if len(self.memory) >= BATCH_SIZE:
+
+            # Sample a random Batch of examples from the Memory of the Snake Agent
             mini_sample = random.sample(self.memory, BATCH_SIZE)
+
+        # If the Memory of the Snake Agent does not have
+        # the sufficient number of examples for sampling a Batch
         else:
+
+            # Set all the examples remembered by the Snake Agent
             mini_sample = self.memory
 
+        # Retrieve the tuple of states of the Snake Agent,
+        # regarding the examples for sampling a Batch
         observations, actions, rewards, new_observations, dones = zip(*mini_sample)
+
+        # Train the Snake Agent, by a step performed by it
         self.snake_q_learning_trainer.train_step(observations, actions, rewards, new_observations, dones)
 
+    # Function to train the Short Memory of the Snake Agent
     def train_short_memory(self, observation, action, reward, new_observation, done):
         self.snake_q_learning_trainer.train_step(observation, action, reward, new_observation, done)
 

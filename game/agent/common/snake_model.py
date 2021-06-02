@@ -28,13 +28,16 @@ import os as operative_system
 # Disable all the Debugging Logs from TensorFlow Library
 operative_system.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
+# From the DateTime Library, import the DateTime Module
+from datetime import datetime
+
 # From the Game's CNN (Convolutional Neural Network) Parameters,
 # import the list of the Kernel Sizes
-from game.others.cnn_parameters import KERNEL_SIZES_LIST
+from game.others.snake_agent_parameters import KERNEL_SIZES_LIST
 
 # From the Game's CNN (Convolutional Neural Network) Parameters,
 # import the list of the Strides
-from game.others.cnn_parameters import STRIDES_LIST
+from game.others.snake_agent_parameters import STRIDES_LIST
 
 # Import the TensorFlow Library, with tensorflow alias
 import tensorflow as tensorflow
@@ -62,9 +65,6 @@ from tensorflow.keras.layers import Dense
 # From the TensorFlow.Keras.Initializers Module,
 # import the He Uniform Initializer
 from tensorflow.keras.initializers import HeUniform
-
-# From the DateTime Library, import the DateTime Module
-from datetime import datetime
 
 
 # Class for the Snake Agent's CNN (Convolutional Neural Network) Model
