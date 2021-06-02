@@ -76,7 +76,7 @@ def snake_demo(actions):
     for frame, action in enumerate(actions):
 
         # Take the respective current Step, according to the Action taken
-        board, reward, done, info = snake_game.step(action=action)
+        board, reward, done, info = snake_game.play_step(action=action)
 
         # Plot the Board of the Game for the Action taken
         plot_board(f"images/{(frame + 1)}.png", board, action_name[action])
