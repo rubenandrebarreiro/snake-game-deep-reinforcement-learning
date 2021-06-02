@@ -33,11 +33,11 @@ from datetime import datetime
 
 # From the Game's CNN (Convolutional Neural Network) Parameters,
 # import the list of the Kernel Sizes
-from game.others.snake_agent_parameters import KERNEL_SIZES_LIST
+from game.others.parameters_arguments import KERNEL_SIZES_LIST
 
 # From the Game's CNN (Convolutional Neural Network) Parameters,
 # import the list of the Strides
-from game.others.snake_agent_parameters import STRIDES_LIST
+from game.others.parameters_arguments import STRIDES_LIST
 
 # Import the TensorFlow Library, with tensorflow alias
 import tensorflow as tensorflow

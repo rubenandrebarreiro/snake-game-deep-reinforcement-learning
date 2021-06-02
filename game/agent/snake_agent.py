@@ -50,29 +50,29 @@ from numpy import random
 
 # From the Game.Others.Snake_Agent_Parameters,
 # import the Maximum Capacity for the Memory (Deque) of the Snake Agent
-from game.others.snake_agent_parameters import MAX_MEMORY
+from game.others.parameters_arguments import MAX_MEMORY
 
 # From the Game.Others.Snake_Agent_Parameters,
-# import the Learning Rate for
+# import the Initial Learning Rates for
 # the CNN (Convolutional Neural Network) Model
-from game.others.snake_agent_parameters import LEARNING_RATE
+from game.others.parameters_arguments import INITIAL_LEARNING_RATES
 
 # From the Game.Others.Snake_Agent_Parameters,
-# import the list of Optimisers to be used in
+# import the List of Available Optimisers to be used in
 # the CNN (Convolutional Neural Network) Model
-from game.others.snake_agent_parameters import OPTIMISERS_LIST
+from game.others.parameters_arguments import AVAILABLE_OPTIMISERS_LIST
 
 # From the Game.Others.Snake_Agent_Parameters,
 # import the Size of the Batch to be used for the Training of
 # the CNN (Convolutional Neural Network) Model
-from game.others.snake_agent_parameters import BATCH_SIZE
+from game.others.parameters_arguments import BATCH_SIZE
 
 
 # Class for the Snake Agent
 class SnakeAgent:
 
     # Constructor for the Snake Agent
-    def __init__(self):
+    def __init__(self, optimiser_id):
 
         # Initialise the number of Games played by the Snake Agent
         self.num_games = 0
@@ -90,13 +90,14 @@ class SnakeAgent:
 
         # Create the Q-Learning Trainer for the Snake Agent
         self.snake_q_learning_trainer = \
-            SnakeAgentQLearningTrainer(self.snake_cnn_model, learning_rate=LEARNING_RATE,
+            SnakeAgentQLearningTrainer(self.snake_cnn_model, learning_rate=INITIAL_LEARNING_RATES[optimiser_id],
                                        gamma_discount_factor=self.gamma_discount_factor)
 
         # TODO - Confirmar Input
         # Initialise the CNN (Convolutional Neural Network) for the Snake Agent
         self.snake_cnn_model = \
-            SnakeAgentCNNModel(OPTIMISERS_LIST[0].lower(), self.snake_q_learning_trainer.optimizer, 11, [16, 32], 3)
+            SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
+                               self.snake_q_learning_trainer.optimizer, 11, [16, 32], 3)
 
     # Function to remember a given tuple of the state of the Snake Agent,
     # by saving it in its Memory
@@ -189,7 +190,7 @@ def train_snake_agent():
     current_score_record = 0
 
     # Initialise the Snake Agent
-    snake_agent = SnakeAgent()
+    snake_agent = SnakeAgent(3)  # TODO - 3 is the ID for the Adam Optimiser
 
     # Create the Snake Game, for a Board Game of (30x30)
     snake_game = SnakeGame(30, 30, border=1)
