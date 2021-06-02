@@ -11,7 +11,8 @@ NOVA School of Science and Technology,
 NOVA University of Lisbon - 2020/2021
 
 Authors:
-- Ruben Andre Barreiro (r.barreiro@campus.fct.unl.pt) - Student no. 42648
+- Rodrigo Jorge Ribeiro (rj.ribeiro@campus.fct.unl.pt)
+- Ruben Andre Barreiro (r.barreiro@campus.fct.unl.pt)
 
 Instructor(s):
 - Ludwig Krippahl (ludi@fct.unl.pt)
@@ -37,7 +38,7 @@ class SnakeGame:
 
     # Constructor of the Snake Game
     def __init__(self, width, height, food_amount=1,
-                 border=1, grass_growth=0,
+                 border=0, grass_growth=0,
                  max_grass=0):
 
         # Initialize the Board of the Game
@@ -187,9 +188,9 @@ class SnakeGame:
             # Set the direction of the Snake as 0
             self.direction = 0
 
-            # The Snake will grow through the defined direction
-            # Two steps: grow + remove last
-            self.grow_snake(self.direction)
+        # The Snake will grow through the defined direction
+        # Two steps: grow + remove last
+        self.grow_snake(self.direction)
 
         # If the Snake eaten one of the Apples
         if self.snake[0] in self.apples:
