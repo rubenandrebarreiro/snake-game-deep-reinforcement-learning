@@ -63,7 +63,7 @@ from snake_game import SnakeGame as Snake_Game
 training_episodes = 300
 
 
-# Function to compute the Learning Mode for the Snake Agent
+# Function to compute the Learning Model for the Snake Agent
 def compute_model_for_snake_agent(current_state_shape, actions_vector_shape):
 
     # Set the Learning Rate as 0.001
