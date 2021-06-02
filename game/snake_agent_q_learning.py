@@ -180,7 +180,7 @@ def train(replay_memory, model, target_model):
 
 
 # Execute the Snake Agent
-def execute_snake_agent(snake_game):
+def execute_snake_agent(snake_game_environment):
 
     # The Threshold for the Random Number generated
     epsilon = 1
@@ -222,7 +222,7 @@ def execute_snake_agent(snake_game):
         total_training_rewards = 0
 
         # Initialise the Observation, for the current Training Episode, resetting it
-        observation = snake_game.reset()
+        observation = snake_game_environment.reset()
 
         # Initialise the Boolean Flag of the information about
         # the Training is done or not
@@ -266,7 +266,7 @@ def execute_snake_agent(snake_game):
 
             # Run the action with maximum Q-Value (Reward),
             # as one timestep on the dynamics of the Environment
-            new_observation, reward, done, info = snake_game.step(action)
+            new_observation, reward, done, info = snake_game_environment.step(action)
 
             # Append the last Experience to the Replay Memory
             replay_memory.append([observation, action, reward, new_observation, done])
