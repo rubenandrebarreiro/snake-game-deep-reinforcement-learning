@@ -1,130 +1,15 @@
-"""
-
-Deep Learning - Assignment #2:
-- Snake Game - Deep Reinforcement Learning
-
-Integrated Master of Computer Science and Engineering
-
-NOVA School of Science and Technology,
-NOVA University of Lisbon - 2020/2021
-
-Authors:
-- Rodrigo Jorge Ribeiro (rj.ribeiro@campus.fct.unl.pt)
-- Ruben Andre Barreiro (r.barreiro@campus.fct.unl.pt)
-
-Instructor(s):
-- Ludwig Krippahl (ludi@fct.unl.pt)
-- Claudia Soares (claudia.soares@fct.unl.pt)
-
-Snake Agent Module for the the Project
-
-"""
-
-# Import the Libraries and Packages
-
-# Import the Operative System Library as operative_system
-import os as operative_system
-
-# Disable all the Debugging Logs from TensorFlow Library
-operative_system.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
-# From the TensorFlow.Keras Module, import the Sequential Learning Model
-from tensorflow.keras import Sequential
-
 # From the Collections Library, import the Deque Module
 from collections import deque
 
 # Import the NumPy, with numpy alias
 import numpy as numpy
 
-# Import Random Library, with random alias
-import random as random
-
-# Import the Snake Game, with the Snake_Game alias
-from snake_game import SnakeGame as Snake_Game
-
 # Set 300 Training Episodes, where one episode corresponds to
 # a full "game", until the pole falls or the cart gets too far from the centre
 training_episodes = 300
 
 
-# Function to compute the Learning Model for the Snake Agent
-def compute_model_for_snake_agent(current_state_shape, actions_vector_shape):
-
-    # Initialise the Sequential Model
-    model = Sequential()
-
-    # Return the Learning Model
-    return model
-
-
-# Function to train the Learning Model to approximate it to the Target Model
-def train(replay_memory, model, target_model):
-
-    # Set the Discount Factor
-    discount_factor = 0.618
-
-    # Set the Batch Size
-    batch_size = (64 * 2)
-
-    # Sample randomly the Replay Memory Queue, according to the size of the Batch,
-    # which acts as a pool of experiences for Training
-    mini_batch = random.sample(replay_memory, batch_size)
-
-    # Retrieve the current States of the Transitions
-    current_states = numpy.array([transition[0] for transition in mini_batch])
-
-    # Predict the current Q-Values, according to the current states
-    current_q_values_list = model.predict(current_states)
-
-    # Set the new current States, from the Transitions in the Mini-Batch
-    new_current_states = numpy.array([transition[3] for transition in mini_batch])
-
-    # Predict the future Q-Values, according to the new current States
-    future_q_values_list = target_model.predict(new_current_states)
-
-    # Initialise the Observations, i.e., the xs (Features) of the Data
-    xs_data = []
-
-    # Initialise the Q-Values to the ys (Targets) of the Data
-    ys_data = []
-
-    # For each Mini-Batch, retrieves the respective Experience, from the Memory Queue
-    for index, (observation, action, reward, new_observation, done) in enumerate(mini_batch):
-
-        # If the Train is not done yet
-        if not done:
-
-            # Compute the new Maximum of Q-Value, for the Future actions,
-            # summing it to the current reward
-            max_future_q_value = (reward + discount_factor * numpy.max(future_q_values_list[index]))
-
-        # If the Train is already done
-        else:
-
-            # Set the current reward as the Maximum of Q-Values,
-            # since there are no more actions to take
-            max_future_q_value = reward
-
-        # Set the current Q-Values, from the list of the current Q-Values
-        current_q_values = current_q_values_list[index]
-
-        # Set the current Q-Values, for each action,
-        # according to the Maximum of Q-Values, summed to the current rewards
-        current_q_values[action] = max_future_q_value
-
-        # Append the current Observation to the xs (Features) of the Data
-        xs_data.append(observation)
-
-        # Append the current Q-Values to the ys (Targets) of the Data
-        ys_data.append(current_q_values)
-
-    # Fit the Learning Model, according to the Observations, i.e., the xs (Features) of the Data
-    # and to the Q-Values, i.e., the ys (Targets) of the Data
-    model.fit(numpy.array(xs_data), numpy.array(ys_data), batch_size=batch_size, verbose=0, shuffle=True)
-
-
-# Execute the Snake Agent
+# Execute the Snake Agent TODO - To be deleted soon
 def execute_snake_agent(snake_game_environment):
 
     # The Threshold for the Random Number generated
@@ -236,6 +121,7 @@ def execute_snake_agent(snake_game_environment):
 
                 # After 100 steps, the Target Model will be updated
                 if steps_to_update_target_model >= 100:
+
                     # Print the debug information about the updating of the Target Model
                     print("\nCopying the Main Network's Weights to the Target Network's Weights...\n\n")
 
@@ -251,15 +137,3 @@ def execute_snake_agent(snake_game_environment):
             # Update the Threshold for the Random Number generated,
             # according to the Minimum and Maximum values for it, as also, to the Decay factor
             epsilon = (min_epsilon + ((max_epsilon - min_epsilon) * numpy.exp(-decay * episode)))
-
-
-# Runnable Method
-if __name__ == "__main__":
-
-    # Create the Snake Game, for a Board Game of (30x30)
-    snake_game = Snake_Game(30, 30, border=1)
-
-    # Reset the Snake Game
-    board, reward, done, info = snake_game.reset()
-
-    execute_snake_agent(snake_game)
