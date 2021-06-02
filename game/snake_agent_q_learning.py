@@ -79,7 +79,7 @@ def compute_model_for_snake_agent(current_state_shape, actions_vector_shape):
     # with 16 Units, a 8x8 Kernel, a 4x4 Stride and a He Uniform Initializer,
     # for the Shape of the Current State Vector
     model.add(Conv2D(16, kernel_size=(8, 8), strides=(4, 4),
-                     kernel_inializer=initializer, input_shape=current_state_shape))  # TODO - Shape?
+                     kernel_inializer=initializer, input_shape=current_state_shape))
 
     # Add a Maximum 2D Pooling Layer, with 2x2 Pool Size
     model.add(MaxPooling2D((2, 2)))
