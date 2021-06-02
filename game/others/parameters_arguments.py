@@ -48,6 +48,29 @@ NUM_GPU_DEVICES = len(tensorflow.config.list_physical_devices('GPU'))
 # The Maximum Memory capacity for the Snake Agent
 MAX_MEMORY = 100000
 
+# The initial value for the Epsilon variable for the Randomness used to,
+# decide about Exploration and Exploitation
+INITIAL_EPSILON_RANDOMNESS = 1
+
+# The Maximum value for the Epsilon variable for the Randomness used to,
+# decide about Exploration and Exploitation
+MAXIMUM_EPSILON_RANDOMNESS = 1
+
+# The Minimum value for the Epsilon variable for the Randomness used to,
+# decide about Exploration and Exploitation
+MINIMUM_EPSILON_RANDOMNESS = 0.01
+
+# The Decay Factor to adjust the value for
+# the Epsilon variable for the Randomness used to,
+# decide about Exploration and Exploitation
+DECAY_FACTOR_EPSILON_RANDOMNESS = 0.01
+
+# The Gamma (Discount Reward) for the Q-Learning Algorithm
+GAMMA_DISCOUNT_FACTOR = 0.9
+
+# The Number of Games (Training Episodes)
+NUM_GAME_TRAINING_EPISODES = 300
+
 # The size of the Batch of Examples of Observations
 BATCH_SIZE = 1000
 
