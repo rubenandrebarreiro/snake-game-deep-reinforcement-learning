@@ -17,7 +17,7 @@ Instructor(s):
 - Ludwig Krippahl (ludi@fct.unl.pt)
 - Claudia Soares (claudia.soares@fct.unl.pt)
 
-Snake Game Module for the the Project
+Snake Game Demo
 (given by the Instructor(s))
 
 """
