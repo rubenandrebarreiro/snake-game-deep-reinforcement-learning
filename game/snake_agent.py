@@ -127,16 +127,16 @@ class SnakeAgent:
 def train_snake_agent():
 
     # Initialise the list of current Scores made by the Snake Agent
-    scores = []
+    current_scores = []
 
     # Initialise the list of Means of the current Scores made by the Snake Agent
-    mean_scores = []
+    current_mean_scores = []
 
     # Initialise the current Total Score made by the Snake Agent
-    total_score = 0
+    current_total_score = 0
 
     # Initialise the current Score Record made by the Snake Agent
-    score_record = 0
+    current_score_record = 0
 
     # Initialise the Snake Agent
     snake_agent = SnakeAgent()
@@ -179,10 +179,10 @@ def train_snake_agent():
             snake_agent.train_long_replay_experiences_memory()
 
             # If the current Score is greater than the Score's Record
-            if score > score_record:
+            if score > current_score_record:
 
                 # Set the Score's Record as the current Score
-                score_record = score
+                current_score_record = score
 
                 # Save the Sequential Model for
                 # the CNN (Convolutional Neural Network)
@@ -190,23 +190,24 @@ def train_snake_agent():
 
             # Print the current Statistics for the Game,
             # regarding the last Action taken by the Snake Agent
-            print("[ Game No.: {} | Score: {} | Record: {} ]".format(snake_agent.num_games, score, score_record))
+            print("[ Game No.: {} | Score: {} | Record: {} ]"
+                  .format(snake_agent.num_games, score, current_score_record))
 
             # Append the current Score to the list of the Scores
-            scores.append(score)
+            current_scores.append(score)
 
             # Sum the current Score to the Total Score
-            total_score += score
+            current_total_score += score
 
             # Compute the current Mean Score, taking into the account the Total Score made
             # and the number of Games played for the Snake Agent
-            mean_score = (total_score / snake_agent.num_games)
+            current_mean_score = (current_total_score / snake_agent.num_games)
 
             # Append the current Mean Score to the list of the Mean Scores
-            mean_scores.append(mean_score)
+            current_mean_scores.append(current_mean_score)
 
             # Call the Dynamic Training Plot
-            dynamic_training_plot(scores, mean_scores)
+            dynamic_training_plot(current_scores, current_mean_scores)
 
 
 # The Main Function
