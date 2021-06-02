@@ -38,8 +38,7 @@ class SnakeGame:
 
     # Constructor of the Snake Game
     def __init__(self, width, height, food_amount=1,
-                 border=0, grass_growth=0,
-                 max_grass=0):
+                 border=0, grass_growth=0, max_grass=0):
 
         # Initialize the Board of the Game
         self.width = width
@@ -160,7 +159,7 @@ class SnakeGame:
             self.done = True
 
     # Function for the Snake take an action
-    def step(self, action):
+    def play_step(self, action):
 
         # Move snake/game by one step.
         # The resulting action can be:
@@ -242,7 +241,7 @@ class SnakeGame:
             self.grass[(self.grass > self.max_grass)] = self.max_grass
 
         # Return the State of the Board, the current Reward, the done Flag and current Score
-        return self.board_state(), reward, self.done, {"score": self.score}
+        return self.board_state(), reward, self.done, {"Score": self.score}
 
     # Function to get the current state of the Game
     def get_state(self):
@@ -290,7 +289,7 @@ class SnakeGame:
         # To test:
         # - Move the Snake;
         # - Print the state of the Game;
-        self.step(direction)
+        self.play_step(direction)
         self.print_state()
 
         # If the Game is done
@@ -312,7 +311,7 @@ class SnakeGame:
         self.grass[:, :] = self.max_grass
 
         # Return the new state of the Game
-        return self.board_state(), 0, self.done, {"score": self.score}
+        return self.board_state(), 0, self.done, {"Score": self.score}
 
     # Function to compute the current state of the Game, on its Board
     def board_state(self, mode="human", close=False):
@@ -322,6 +321,7 @@ class SnakeGame:
 
         # If there is some maximum threshold for the Grass growing
         if self.max_grass > 0:
+
             # Paint that (x,y) coordinate as Green,
             # according to the threshold for the Grass growing
             self.board[:, :, 1] = (self.grass / self.max_grass * 0.3)
