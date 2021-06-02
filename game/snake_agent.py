@@ -83,7 +83,9 @@ class SnakeAgent:
     def train_short_memory(self, observation, action, reward, new_observation, done):
         self.snake_q_learning_trainer.train_step(observation, action, reward, new_observation, done)
 
-    def get_next_action(self, observation):
+    # Function to make the Snake Agent take the next Action,
+    # according to an Observation made by it
+    def make_next_action(self, observation):
 
         # Decrease the Epsilon variable for the Randomness used to,
         # decide about Exploration and Exploitation,
@@ -148,8 +150,8 @@ def train_snake_agent():
         # Retrieve the old observation made by the Snake Agent
         snake_old_observation = snake_game.get_state()
 
-        # Get the next Action for the Snake Agent
-        snake_action = snake_agent.get_next_action(snake_old_observation)
+        # Make the Snake Agent take the next Action
+        snake_action = snake_agent.make_next_action(snake_old_observation)
 
         # Make the Snake Agent take a step according to the next Action retrieved
         board_state, reward, done, score = snake_game.play_step(snake_action)
