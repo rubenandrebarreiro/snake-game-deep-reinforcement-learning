@@ -48,24 +48,56 @@ from numpy import argmax
 # From the NumPy Library, import the Random function
 from numpy import random
 
-# From the Game.Others.Snake_Agent_Parameters,
-# import the Maximum Capacity for the Memory (Deque) of the Snake Agent
-from game.others.parameters_arguments import MAX_MEMORY
+# From the NumPy Library, import the Exponential function
+from numpy import exp
 
-# From the Game.Others.Snake_Agent_Parameters,
+# From the Game.Others.Parameters_and_Arguments,
 # import the Initial Learning Rates for
 # the CNN (Convolutional Neural Network) Model
 from game.others.parameters_arguments import INITIAL_LEARNING_RATES
 
-# From the Game.Others.Snake_Agent_Parameters,
+# From the Game.Others.Parameters_and_Arguments,
 # import the List of Available Optimisers to be used in
 # the CNN (Convolutional Neural Network) Model
 from game.others.parameters_arguments import AVAILABLE_OPTIMISERS_LIST
 
-# From the Game.Others.Snake_Agent_Parameters,
+# From the Game.Others.Parameters_and_Arguments,
 # import the Size of the Batch to be used for the Training of
 # the CNN (Convolutional Neural Network) Model
 from game.others.parameters_arguments import BATCH_SIZE
+
+# From the Game.Others.Parameters_and_Arguments,
+# import the Maximum Capacity for the Memory (Deque) of the Snake Agent
+from game.others.parameters_arguments import MAX_MEMORY
+
+# From the Game.Others.Parameters_and_Arguments,
+# import the initial value for the Epsilon variable for the Randomness used to,
+# decide about Exploration and Exploitation
+from game.others.parameters_arguments import INITIAL_EPSILON_RANDOMNESS
+
+# From the Game.Others.Parameters_and_Arguments,
+# import the maximum value for the Epsilon variable for the Randomness used to,
+# decide about Exploration and Exploitation
+from game.others.parameters_arguments import MAXIMUM_EPSILON_RANDOMNESS
+
+# From the Game.Others.Parameters_and_Arguments,
+# import the Minimum value for the Epsilon variable for the Randomness used to,
+# decide about Exploration and Exploitation
+from game.others.parameters_arguments import MINIMUM_EPSILON_RANDOMNESS
+
+# From the Game.Others.Parameters_and_Arguments,
+# import the Decay Factor to adjust the value for
+# the Epsilon variable for the Randomness used to,
+# decide about Exploration and Exploitation
+from game.others.parameters_arguments import DECAY_FACTOR_EPSILON_RANDOMNESS
+
+# From the Game.Others.Parameters_and_Arguments,
+# import the Gamma value (i.e., the Discount Reward)
+from game.others.parameters_arguments import GAMMA_DISCOUNT_FACTOR
+
+# From the Game.Others.Parameters_and_Arguments,
+# import the Number of Games (Training Episodes)
+from game.others.parameters_arguments import NUM_GAME_TRAINING_EPISODES
 
 
 # Class for the Snake Agent
@@ -74,30 +106,39 @@ class SnakeAgent:
     # Constructor for the Snake Agent
     def __init__(self, optimiser_id):
 
-        # Initialise the number of Games played by the Snake Agent
-        self.num_games = 0
+        # Initialise the Number of Games (Training Episodes) played by the Snake Agent
+        self.num_games_episodes_played = 0
 
         # Initialise the Epsilon variable for the Randomness used to,
         # decide about Exploration and Exploitation
-        self.epsilon_randomness = 0
+        self.epsilon_randomness = INITIAL_EPSILON_RANDOMNESS
 
         # Set the Gamma value (i.e., the Discount Reward)
-        self.gamma_discount_factor = 0.9
+        self.gamma_discount_factor = GAMMA_DISCOUNT_FACTOR
 
         # Set the Memory of the Snake Agent,
         # for the Deque structure with the Maximum Capacity defined for it
         self.memory = deque(maxlen=MAX_MEMORY)
 
-        # Create the Q-Learning Trainer for the Snake Agent
-        self.snake_q_learning_trainer = \
-            SnakeAgentQLearningTrainer(self.snake_cnn_model, learning_rate=INITIAL_LEARNING_RATES[optimiser_id],
-                                       gamma_discount_factor=self.gamma_discount_factor)
-
-        # TODO - Confirmar Input
-        # Initialise the CNN (Convolutional Neural Network) for the Snake Agent
-        self.snake_cnn_model = \
+        # Initialise the CNN (Convolutional Neural Network) Model for the Snake Agent,
+        # for the current observations TODO - Confirm Input Shape and others
+        self.snake_cnn_model_for_current_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, 11, [16, 32], 3)
+                               self.snake_q_learning_trainer.optimizer, 11, [16, 32], 3).compute_model()
+
+        # Initialise the CNN (Convolutional Neural Network) Model for the Snake Agent,
+        # for the target observations TODO - Confirm Input Shape and others
+        self.snake_cnn_model_for_target_observations = \
+            SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
+                               self.snake_q_learning_trainer.optimizer, 11, [16, 32], 3).compute_model()
+
+        # Create the Snake Agent's Q-Learning Trainer, given the CNN (Convolutional Neural Network) Models,
+        # for the current and target observations
+        self.snake_q_learning_trainer = \
+            SnakeAgentQLearningTrainer(self.snake_cnn_model_for_current_observations,
+                                       self.snake_cnn_model_for_target_observations,
+                                       learning_rate=INITIAL_LEARNING_RATES[optimiser_id],
+                                       gamma_discount_factor=self.gamma_discount_factor)
 
     # Function to remember a given tuple of the state of the Snake Agent,
     # by saving it in its Memory
@@ -114,24 +155,26 @@ class SnakeAgent:
         if len(self.memory) >= BATCH_SIZE:
 
             # Sample a random Batch of examples from the Memory of the Snake Agent
-            mini_sample = random.sample(self.memory, BATCH_SIZE)
+            mini_batch_sample = random.sample(self.memory, BATCH_SIZE)
 
         # If the Memory of the Snake Agent does not have
         # the sufficient number of examples for sampling a Batch
         else:
 
             # Set all the examples remembered by the Snake Agent
-            mini_sample = self.memory
+            mini_batch_sample = self.memory
 
         # Retrieve the tuple of states of the Snake Agent,
         # regarding the examples for sampling a Batch
-        observations, actions, rewards, new_observations, dones = zip(*mini_sample)
+        observations, actions, rewards, new_observations, dones = zip(*mini_batch_sample)
 
         # Train the Snake Agent, by a step performed by it
         self.snake_q_learning_trainer.train_step(observations, actions, rewards, new_observations, dones)
 
     # Function to train the Short Memory of the Snake Agent
     def train_short_memory(self, observation, action, reward, new_observation, done):
+
+        # Train a Step for the Snake Agent's Q-Learning Trainer
         self.snake_q_learning_trainer.train_step(observation, action, reward, new_observation, done)
 
     # Function to make the Snake Agent take the next Action,
@@ -141,7 +184,7 @@ class SnakeAgent:
         # Decrease the Epsilon variable for the Randomness used to,
         # decide about Exploration and Exploitation,
         # according to the current number of Games played by the Snake Agent
-        self.epsilon_randomness = 80 - self.num_games
+        self.epsilon_randomness = 80 - self.num_games_episodes_played
 
         # Initialise the vector for the next Action to
         # be taken by the Snake Agent
@@ -157,14 +200,17 @@ class SnakeAgent:
         # The Snake Agent decides to Exploit the Environment
         else:
 
-            # Create a Tensor for the Observations
+            # Create a tensor for the current Observation
             observation_tensor = observation.reshape([1, observation.shape[0]])
 
             # Predict the possible next Q-Values (Rewards)
-            predicted = self.snake_cnn_model.model.predict(observation_tensor).flatten()
+            predicted_q_values = \
+                self.snake_cnn_model_for_current_observations.model\
+                    .predict(observation_tensor).flatten()
 
-            # Save the action that maximizes the Q-Value (Reward)
-            move = argmax(predicted)
+            # Save the move that maximizes the Q-Values (Rewards),
+            # for the next Action to be taken
+            move = argmax(predicted_q_values)
 
         # Set the next Action to be taken by the Snake Agent,
         # according to the move chosen by it
@@ -192,73 +238,89 @@ def train_snake_agent():
     # Initialise the Snake Agent
     snake_agent = SnakeAgent(3)  # TODO - 3 is the ID for the Adam Optimiser
 
-    # Create the Snake Game, for a Board Game of (30x30)
-    snake_game = SnakeGame(30, 30, border=1)
+    # For each current Game (Training Episode)
+    for current_num_game_episode in range(NUM_GAME_TRAINING_EPISODES):
 
-    # Start an infinite loop
-    while True:
+        # Create the Snake Game, for a Board Game of (30x30)
+        snake_game = SnakeGame(30, 30, border=1)
 
-        # Retrieve the old observation made by the Snake Agent
-        snake_old_observation = snake_game.get_state()
+        # Start an infinite loop
+        while True:
 
-        # Make the Snake Agent take the next Action
-        snake_action = snake_agent.make_next_action(snake_old_observation)
+            # Retrieve the old observation made by the Snake Agent
+            snake_old_observation = snake_game.get_state()
 
-        # Make the Snake Agent take a step according to the next Action retrieved
-        board_state, reward, done, score = snake_game.play_step(snake_action)
+            # Make the Snake Agent take the next Action
+            snake_action = snake_agent.make_next_action(snake_old_observation)
 
-        # Retrieve the new observation made by the Snake Agent,
-        # considering the next Action retrieved
-        snake_new_observation = snake_game.get_state()
+            # Make the Snake Agent take a step according to the next Action retrieved
+            board_state, reward, done, score = snake_game.play_step(snake_action)
 
-        # Make the Snake Agent train its Short Memory, using the tuple for its last state
-        snake_agent.train_short_memory(snake_old_observation, snake_action, reward, snake_new_observation, done)
+            # Retrieve the new observation made by the Snake Agent,
+            # considering the next Action retrieved
+            snake_new_observation = snake_game.get_state()
 
-        # Remember the tuple for the last state of the Snake Agent
-        snake_agent.remember(snake_old_observation, snake_action, reward, snake_new_observation, done)
+            # Make the Snake Agent train its Short Memory, using the tuple for its last state
+            snake_agent.train_short_memory(snake_old_observation, snake_action, reward,
+                                           snake_new_observation, done)
 
-        # If the current Game is over (i.e., Game Over situation)
-        if done:
+            # Remember the tuple for the last state of the Snake Agent
+            snake_agent.remember(snake_old_observation, snake_action, reward,
+                                 snake_new_observation, done)
 
-            # train long memory (replay memory or experience replay)
-            snake_game.reset()
+            # If the current Game is over (i.e., Game Over situation)
+            if done:
 
-            # Increase the number of Games played by the Snake Agent
-            snake_agent.num_games += 1
+                # train long memory (replay memory or experience replay)
+                snake_game.reset()
 
-            # Make the Snake Agent train its Long (Replay/Experiences) Memory
-            snake_agent.train_long_replay_experiences_memory()
+                # Increase the number of Games played by the Snake Agent
+                snake_agent.num_games_episodes_played += 1
 
-            # If the current Score is greater than the Score's Record
-            if score > current_score_record:
+                # Make the Snake Agent train its Long (Replay/Experiences) Memory
+                snake_agent.train_long_replay_experiences_memory()
 
-                # Set the Score's Record as the current Score
-                current_score_record = score
+                # If the current Score is greater than the Score's Record
+                if score > current_score_record:
 
-                # Save the Sequential Model for
-                # the CNN (Convolutional Neural Network)
-                snake_agent.snake_cnn_model.save_model()
+                    # Set the Score's Record as the current Score
+                    current_score_record = score
 
-            # Print the current Statistics for the Game,
-            # regarding the last Action taken by the Snake Agent
-            print("[ Game No.: {} | Score: {} | Record: {} ]"
-                  .format(snake_agent.num_games, score, current_score_record))
+                    # Save the Sequential Model for
+                    # the CNN (Convolutional Neural Network) for the current observations
+                    snake_agent.snake_cnn_model_for_current_observations.save_model()
 
-            # Append the current Score to the list of the Scores
-            current_scores.append(score)
+                # Print the current Statistics for the Game,
+                # regarding the last Action taken by the Snake Agent
+                print("[ Game No.: {} | Score: {} | Record: {} ]"
+                      .format(snake_agent.num_games_episodes_played, score, current_score_record))
 
-            # Sum the current Score to the Total Score
-            current_total_score += score
+                # Append the current Score to the list of the Scores
+                current_scores.append(score)
 
-            # Compute the current Mean Score, taking into the account the Total Score made
-            # and the number of Games played for the Snake Agent
-            current_mean_score = (current_total_score / snake_agent.num_games)
+                # Sum the current Score to the Total Score
+                current_total_score += score
 
-            # Append the current Mean Score to the list of the Mean Scores
-            current_mean_scores.append(current_mean_score)
+                # Compute the current Mean Score, taking into the account the Total Score made
+                # and the number of Games played for the Snake Agent
+                current_mean_score = (current_total_score / snake_agent.num_games_episodes_played)
 
-            # Call the Dynamic Training Plot
-            dynamic_training_plot(current_scores, current_mean_scores)
+                # Append the current Mean Score to the list of the Mean Scores
+                current_mean_scores.append(current_mean_score)
+
+                # Call the Dynamic Training Plot
+                dynamic_training_plot(current_scores, current_mean_scores)
+
+            # Break the loop, when the Training is done
+            break
+
+        # Update the Epsilon variable for the Randomness used to,
+        # decide about Exploration and Exploitation, taking into account both of
+        # the Minimum and Maximum values for it, as also, to the Decay factor to adjust it
+        snake_agent.epsilon_randomness = \
+            (MINIMUM_EPSILON_RANDOMNESS +
+             ((MAXIMUM_EPSILON_RANDOMNESS - MINIMUM_EPSILON_RANDOMNESS) *
+              exp(-DECAY_FACTOR_EPSILON_RANDOMNESS * current_num_game_episode)))
 
 
 # The Main Function
