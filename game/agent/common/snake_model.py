@@ -30,11 +30,11 @@ operative_system.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # From the Game's CNN (Convolutional Neural Network) Parameters,
 # import the list of the Kernel Sizes
-from game.cnn_parameters import KERNEL_SIZES_LIST
+from game.others.cnn_parameters import KERNEL_SIZES_LIST
 
 # From the Game's CNN (Convolutional Neural Network) Parameters,
 # import the list of the Strides
-from game.cnn_parameters import STRIDES_LIST
+from game.others.cnn_parameters import STRIDES_LIST
 
 # Import the TensorFlow Library, with tensorflow alias
 import tensorflow as tensorflow

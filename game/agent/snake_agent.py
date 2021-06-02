@@ -20,20 +20,26 @@ Snake Agent Module for the the Project
 
 """
 
-# From the Collections Library, import the Deque Module
+# Import the Libraries and Packages
+
+# From the Collections Library, import the Deque
 from collections import deque
 
+# From the Game.Snake_Game Module import the Snake Game
 from game.snake_game import SnakeGame
 
-from snake_trainer import SnakeAgentQLearningTrainer
+# From the Game.Snake_Game Module import the Snake Game
+from game.agent.common.snake_trainer import SnakeAgentQLearningTrainer
 
-from snake_model import SnakeAgentCNNModel
+from game.agent.common.snake_model import SnakeAgentCNNModel
 
 from game.utils.plotting_helper import dynamic_training_plot
 
-from numpy import argmax, random
+from numpy import argmax
 
-from cnn_parameters import OPTIMISERS_LIST
+from numpy import random
+
+from game.others.cnn_parameters import OPTIMISERS_LIST
 
 MAX_MEMORY = 100000
 
