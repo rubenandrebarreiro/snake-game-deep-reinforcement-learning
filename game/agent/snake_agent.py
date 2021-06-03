@@ -75,6 +75,11 @@ from numpy import random
 from numpy import exp
 
 # From the Game.Others.Parameters_and_Arguments,
+# import the Sleep Time, in seconds for
+# a better presentation
+from game.others.parameters_arguments import SLEEP_TIME_SECS
+
+# From the Game.Others.Parameters_and_Arguments,
 # import the Initial Learning Rates for
 # the CNN (Convolutional Neural Network) Model
 from game.others.parameters_arguments import INITIAL_LEARNING_RATES
@@ -153,13 +158,13 @@ class SnakeAgent:
         # for the current observations TODO - Confirm Input Shape and others
         self.snake_cnn_model_for_current_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, board_shape, [16, 32], 3).compute_model()
+                               self.snake_q_learning_trainer.optimizer, board_shape, [16, 32], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Model for the Snake Agent,
         # for the target observations TODO - Confirm Input Shape and others
         self.snake_cnn_model_for_target_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, board_shape, [16, 32], 3).compute_model()
+                               self.snake_q_learning_trainer.optimizer, board_shape, [16, 32], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Models for the Snake Agent,
         # for the current and target observations
@@ -229,7 +234,7 @@ class SnakeAgent:
             # Predict the possible next Q-Values (Rewards)
             predicted_q_values = \
                 self.snake_cnn_model_for_current_observations.model\
-                    .predict(observation_tensor).flatten()
+                    .model.predict(observation_tensor).flatten()
 
             # Save the move that maximizes the Q-Values (Rewards),
             # for the next Action to be taken
@@ -278,6 +283,14 @@ def train_snake_agent():
     # Retrieve the name of the Actions possible to be taken by the Snake Agent
     action_names = {-1: "Turn Left", 0: "Straight Ahead", 1: "Turn Right"}
 
+    # Retrieve the Now Datetime
+    datetime_now = datetime.now()
+
+    # Built the Timestamp for the Game
+    game_start_timestamp = "{}_{}_{}_{}_{}_{}" \
+        .format(datetime_now.year, datetime_now.month, datetime_now.day,
+                datetime_now.hour, datetime_now.minute, datetime_now.second)
+
     # For each current Game (Training Episode)
     for current_num_game_episode in range(NUM_GAME_TRAINING_EPISODES):
 
@@ -292,19 +305,11 @@ def train_snake_agent():
         # Initialise the Step counter, for the Snake Agent
         snake_agent_num_steps = 0
 
-        # Retrieve the Now Datetime
-        datetime_now = datetime.now()
-
-        # Built the Timestamp for the Game
-        game_timestamp = "{}_{}_{}_{}_{}_{}" \
-            .format(datetime_now.year, datetime_now.month, datetime_now.day,
-                    datetime_now.hour, datetime_now.minute, datetime_now.second)
-
         # Built the Game Board path, to save the images of the Board of the Game
-        game_board_path = "game_{}_{}".format((current_num_game_episode + 1), game_timestamp)
+        game_board_path = "game_{}".format((current_num_game_episode + 1))
 
         # Build the Full Path of the Game Board
-        game_board_full_path = "images/boards/{}".format(game_board_path)
+        game_board_full_path = "images/boards/{}/{}".format(game_start_timestamp, game_board_path)
 
         # Verify if the directory for the Full Path of the Game Board exists
         if not operative_system.path.exists(game_board_full_path):
@@ -324,9 +329,9 @@ def train_snake_agent():
         # Print the initial State of the Snake Game
         snake_game.print_state()
 
-        # Sleep of 1 second
+        # Sleep of n second
         # Note: Uncomment/Comment if you want;
-        time.sleep(1)
+        time.sleep(SLEEP_TIME_SECS)
 
         # Print a blank line
         print("\n")
@@ -362,9 +367,9 @@ def train_snake_agent():
             # Print the current State of the Snake Game
             snake_game.print_state()
 
-            # Sleep of 1 second
+            # Sleep of n second
             # Note: Uncomment/Comment if you want;
-            time.sleep(1)
+            time.sleep(SLEEP_TIME_SECS)
 
             # Print a blank line
             print("\n")
@@ -384,17 +389,23 @@ def train_snake_agent():
             # If the current Game is over (i.e., Game Over situation)
             if done:
 
+                # Print some debug information
+                print("Game Over!!!\n")
+
                 # Increase the number of Games played by the Snake Agent
                 snake_agent.num_games_episodes_played += 1
 
                 # Make the Snake Agent train its Long (Replay/Experiences) Memory
                 snake_agent.train_long_replay_experiences_memory()
 
+                # Retrieve the current Score from the Dictionary of the Score
+                current_score = score["Score"]
+
                 # If the current Score is greater than the Score's Record
-                if score > current_score_record:
+                if current_score > current_score_record:
 
                     # Set the Score's Record as the current Score
-                    current_score_record = score
+                    current_score_record = current_score
 
                     # Save the Sequential Model for
                     # the CNN (Convolutional Neural Network) for the current observations
@@ -403,13 +414,13 @@ def train_snake_agent():
                 # Print the current Statistics for the Game,
                 # regarding the last Action taken by the Snake Agent
                 print("[ Game No.: {} | Score: {} | Record: {} ]"
-                      .format(snake_agent.num_games_episodes_played, score, current_score_record))
+                      .format(snake_agent.num_games_episodes_played, current_score, current_score_record))
 
                 # Append the current Score to the list of the Scores
-                current_scores.append(score)
+                current_scores.append(current_score)
 
                 # Sum the current Score to the Total Score
-                current_total_score += score
+                current_total_score += current_score
 
                 # Compute the current Mean Score, taking into the account the Total Score made
                 # and the number of Games played for the Snake Agent

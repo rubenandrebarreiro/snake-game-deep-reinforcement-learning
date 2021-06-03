@@ -143,9 +143,6 @@ class SnakeAgentCNNModel:
                            optimizer=self.optimizer_for_model,
                            metrics=["accuracy"])
 
-        # Return the Sequential Model
-        return self.model
-
     # Function to save the Sequential Model
     def save_model(self):
 

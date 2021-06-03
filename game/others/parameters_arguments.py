@@ -45,7 +45,10 @@ TENSORFLOW_KERAS_HPC_BACKEND_SESSION = True
 NUM_CPU_PROCESSORS_CORES = multiprocessing.cpu_count()
 
 # The Number of GPU's Devices
-NUM_GPU_DEVICES = len(tensorflow.config.list_physical_devices('GPU'))
+NUM_GPU_DEVICES = len(tensorflow.config.list_physical_devices("GPU"))
+
+# The time for sleep, in seconds
+SLEEP_TIME_SECS = 0
 
 # The Maximum Memory capacity for the Snake Agent
 MAX_MEMORY = 100000

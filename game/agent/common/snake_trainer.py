@@ -94,14 +94,28 @@ class SnakeAgentQLearningTrainer:
         self.snake_cnn_model_for_target_observations = \
             snake_cnn_model_for_target_observations
 
+        # Compute the final CNN (Convolutional Neural Network) Model for the current observations
+        self.snake_cnn_model_for_current_observations.compute_model()
+
+        # Compute the final CNN (Convolutional Neural Network) Model for the target observations
+        self.snake_cnn_model_for_target_observations.compute_model()
+
     # Function for the Snake Agent's Q-Learning Trainer train a Step
     def train_step(self, observations, actions, rewards, new_observations, dones):
 
-        # If the dones is a list of values
-        if isinstance(dones, list):
+        # If the dones is a tuple of values
+        if isinstance(dones, tuple):
 
             # Retrieve the number of Experience's Examples
             num_experience_examples = len(dones)
+
+            # Convert the observations for an NumPy Array,
+            # as the Current States of the Snake Agent
+            current_states = array(observations)
+
+            # Convert the new observations for an NumPy Array,
+            # as the New States of the Snake Agent
+            new_states = array(new_observations)
 
         # If the dones is a single value
         else:
@@ -109,21 +123,21 @@ class SnakeAgentQLearningTrainer:
             # Retrieve the number of Experience's Examples, as 1
             num_experience_examples = 1
 
-        # Convert the observations for an NumPy Array,
-        # as the Current States of the Snake Agent
-        current_states = array([observations])
+            # Convert the observations for an NumPy Array,
+            # as the Current States of the Snake Agent
+            current_states = array([observations])
 
-        # Convert the new observations for an NumPy Array,
-        # as the New States of the Snake Agent
-        new_states = array([new_observations])
+            # Convert the new observations for an NumPy Array,
+            # as the New States of the Snake Agent
+            new_states = array([new_observations])
 
         # Predict the Q-Values, according to the Current States of the Snake Agent
         q_values_list_for_current_states = \
-            self.snake_cnn_model_for_current_observations.predict(current_states)
+            self.snake_cnn_model_for_current_observations.model.predict(current_states)
 
         # Predict the Q-Values, according to the New States of the Snake Agent
         q_values_list_for_new_states = \
-            self.snake_cnn_model_for_target_observations.predict(new_states)
+            self.snake_cnn_model_for_target_observations.model.predict(new_states)
 
         # Initialise the current Observations as the xs (Features) of the Data
         xs_features_data = []
@@ -135,7 +149,7 @@ class SnakeAgentQLearningTrainer:
         for index_experience_example in range(num_experience_examples):
 
             # If the dones is a list of values
-            if isinstance(dones, list):
+            if isinstance(dones, tuple):
 
                 # Retrieve the Observation for the current Experience's Example
                 observation = observations[index_experience_example]
@@ -186,9 +200,22 @@ class SnakeAgentQLearningTrainer:
                 # since there are no more actions to take
                 max_future_action_q_value = reward
 
-            # Set the current Q-Values, for each action,
-            # according to the Maximum of Q-Values, summed to the current rewards
-            current_q_values[action] = max_future_action_q_value
+            # If the dones is a list of values
+            if isinstance(dones, tuple):
+
+                # Reshape the current Q-Values, for each Action
+                current_q_values = current_q_values.reshape(-1)
+
+                # Set the current Q-Values, for each Action,
+                # according to the Maximum of Q-Values, summed to the current rewards
+                current_q_values[(action + 1)] = max_future_action_q_value
+
+            # If the dones is a single value
+            else:
+
+                # Set the current Q-Values, for each action,
+                # according to the Maximum of Q-Values, summed to the current rewards
+                current_q_values[0] = max_future_action_q_value
 
             # Append the current Observation to the xs (Features) of the Data
             xs_features_data.append(observation)
@@ -200,8 +227,8 @@ class SnakeAgentQLearningTrainer:
         # according to the current Observations, i.e., the xs (Features) of the Data
         # and to the Q-Values of the new Observations, i.e., the ys (Targets) of the Data
         self.snake_cnn_model_for_current_observations\
-            .fit(array(xs_features_data), array(ys_targets_data),
-                 batch_size=BATCH_SIZE, verbose=0, shuffle=True)
+            .model.fit(array(xs_features_data), array(ys_targets_data),
+                       batch_size=BATCH_SIZE, verbose=0, shuffle=True)
 
     # Static function to compute the new Q-Value, for the given Q-Values of the new observations,
     # following the update rule for the reward
