@@ -113,7 +113,7 @@ class SnakeAgentCNNModel:
                 self.model.add(Conv2D(self.hidden_shapes[hidden_shape_index],
                                       kernel_size=(KERNEL_SIZES_LIST[hidden_shape_index], KERNEL_SIZES_LIST[hidden_shape_index]),
                                       strides=(STRIDES_LIST[hidden_shape_index], STRIDES_LIST[hidden_shape_index]),
-                                      kernel_inializer=he_uniform_initializer,
+                                      kernel_initializer=he_uniform_initializer, padding="same",
                                       input_shape=self.input_shape))
 
             # If it is not the 1s Hidden Layer Shape
@@ -124,7 +124,7 @@ class SnakeAgentCNNModel:
                 self.model.add(Conv2D(self.hidden_shapes[hidden_shape_index],
                                       kernel_size=(KERNEL_SIZES_LIST[hidden_shape_index], KERNEL_SIZES_LIST[hidden_shape_index]),
                                       strides=(STRIDES_LIST[hidden_shape_index], STRIDES_LIST[hidden_shape_index]),
-                                      kernel_inializer=he_uniform_initializer))
+                                      kernel_initializer=he_uniform_initializer, padding="same"))
 
             # Add a Maximum 2D Pooling Layer
             self.model.add(MaxPooling2D((2, 2)))

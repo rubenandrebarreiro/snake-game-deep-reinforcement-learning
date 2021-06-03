@@ -246,7 +246,7 @@ class SnakeGame:
     # Function to get the current state of the Game
     def get_state(self):
 
-        # Easily get current state (score, apple, snake head and tail)
+        # Easily get current state (score, apple, Snake's Head and Tail)
         score = self.score
         apple = self.apples
         head = self.snake[0]
