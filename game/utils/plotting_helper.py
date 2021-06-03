@@ -28,8 +28,40 @@ from IPython import display
 # From the Matplotlib Library import the PyPlot Module, as the py_plot alias
 import matplotlib.pyplot as py_plot
 
-# Turn the Interactive Mode of the PyPlot Module
-py_plot.ion()
+
+# Turn on the Interactive Mode of the PyPlot Module
+def turn_on_interactive_mode():
+    py_plot.ion()
+
+
+# Turn off the Interactive Mode of the PyPlot Module
+def turn_off_interactive_mode():
+    py_plot.ioff()
+
+
+# Function to plot the Board of the Snake Game
+def plot_board(file_name, board, text=None):
+
+    # Initialise the Figure for Plotting
+    py_plot.figure(figsize=(10, 10))
+
+    # Show the Plotting for the Board of the Snake Game
+    py_plot.imshow(board)
+
+    # Deactivate the Plotting of the Axis
+    py_plot.axis("off")
+
+    # If the text is not None
+    if text is not None:
+
+        # Plot the Text for the Action taken
+        py_plot.gca().text(3, 3, text, fontsize=45, color="yellow")
+
+    # Save the Image for the Plotting of the Board of the Snake Game
+    py_plot.savefig(file_name, bbox_inches="tight")
+
+    # Close the Plotting for the Board of the Snake Game
+    py_plot.close()
 
 
 # Function for the Dynamic Training Plot
