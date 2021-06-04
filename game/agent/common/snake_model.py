@@ -64,8 +64,8 @@ from tensorflow.keras.layers import Dense
 
 # From the TensorFlow.Keras.Initializers Module,
 # import the He Uniform Initializer
-#from tensorflow.keras.initializers import HeUniform
-from tensorflow.keras.initializers import he_uniform
+from tensorflow.keras.initializers import HeUniform
+#from tensorflow.keras.initializers import he_uniform
 
 
 # Class for the Snake Agent's CNN (Convolutional Neural Network) Model
@@ -98,7 +98,8 @@ class SnakeAgentCNNModel:
     def compute_model(self):
 
         # Initialise the He Uniform Initializer for the Model
-        he_uniform_initializer = he_uniform()
+        #he_uniform_initializer = he_uniform()
+        he_uniform_initializer = HeUniform()
 
         # Initialise the Sequential Model
         self.model = Sequential()
