@@ -71,6 +71,9 @@ from numpy import argmax
 # From the NumPy Library, import the Random function
 from numpy import random
 
+# From the NumPy Library, import the Expand dim function
+from numpy import expand_dims
+
 # From the NumPy Library, import the Exponential function
 from numpy import exp
 
@@ -228,17 +231,16 @@ class SnakeAgent:
             # Print some debug information
             print("The Snake Agent will exploit the environment:\n")
 
-            # Create a tensor for the current Observation
-            observation_tensor = observation.reshape([1, observation.shape[0]])
+            observation_wrapper = expand_dims(observation, axis=0)
 
             # Predict the possible next Q-Values (Rewards)
             predicted_q_values = \
-                self.snake_cnn_model_for_current_observations.model\
-                    .model.predict(observation_tensor).flatten()
+                self.snake_cnn_model_for_current_observations\
+                    .model.predict(observation_wrapper).flatten()
 
             # Save the move that maximizes the Q-Values (Rewards),
             # for the next Action to be taken
-            next_action = argmax(predicted_q_values)
+            next_action = (argmax(predicted_q_values) - 1)
 
         # The Snake Agent decided to turn to left
         if next_action == -1:

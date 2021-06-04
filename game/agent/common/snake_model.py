@@ -64,7 +64,8 @@ from tensorflow.keras.layers import Dense
 
 # From the TensorFlow.Keras.Initializers Module,
 # import the He Uniform Initializer
-from tensorflow.keras.initializers import HeUniform
+#from tensorflow.keras.initializers import HeUniform
+from tensorflow.keras.initializers import he_uniform
 
 
 # Class for the Snake Agent's CNN (Convolutional Neural Network) Model
@@ -97,7 +98,7 @@ class SnakeAgentCNNModel:
     def compute_model(self):
 
         # Initialise the He Uniform Initializer for the Model
-        he_uniform_initializer = HeUniform()
+        he_uniform_initializer = he_uniform()
 
         # Initialise the Sequential Model
         self.model = Sequential()
@@ -135,8 +136,15 @@ class SnakeAgentCNNModel:
         # Add a Dense Layer, with 256 Units, with the He Uniform Initializer
         self.model.add(Dense(256, kernel_initializer=he_uniform_initializer))
 
+        # Add a ReLU Activation Layer
+        self.model.add(Activation("relu"))
+
         # Add a Dense Layer, for the Shape of the Actions Vector
-        self.model.add(Dense(self.output_shape))
+        self.model.add(Dense(self.output_shape,
+                             kernel_initializer=he_uniform_initializer))
+
+        # Add a Linear Activation Layer
+        self.model.add(Activation("linear"))
 
         # Compile the Sequential Model, with the Huber Loss, using the chosen Optimiser
         self.model.compile(loss=tensorflow.keras.losses.Huber(),
@@ -150,10 +158,19 @@ class SnakeAgentCNNModel:
         datetime_now = datetime.now()
 
         # Retrieve the Timestamp to save the Sequential Model
-        model_timestamp = "{}_{}_{}_{}_{}_{}"\
+        model_timestamp = "{}{}{}{}{}{}"\
             .format(datetime_now.year, datetime_now.month, datetime_now.day,
                     datetime_now.hour, datetime_now.minute, datetime_now.second)
 
+        # Build the Full Path of the Models
+        model_full_path = "./models/model{}optimiser{}"\
+            .format(self.optimizer_for_model_name.lower(), model_timestamp)
+
+        # Verify if the directory for the Full Path of the Game Board exists
+        if not operative_system.path.exists(model_full_path):
+
+            # Make the directory for the Full Path of the Game Board
+            operative_system.makedirs(model_full_path)
+
         # Save the Sequential Model
-        self.model.save("./models/model_{}_optimiser_{}"
-                        .format(self.optimizer_for_model_name.lower(), model_timestamp))
+        self.model.save(model_full_path)
