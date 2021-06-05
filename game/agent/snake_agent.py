@@ -77,6 +77,9 @@ from numpy import expand_dims
 # From the NumPy Library, import the Exponential function
 from numpy import exp
 
+# From the Random Library, import the Sample function
+from random import sample
+
 # From the Game.Others.Parameters_and_Arguments,
 # import the Sleep Time, in seconds for
 # a better presentation
@@ -137,6 +140,10 @@ class SnakeAgent:
     # Constructor for the Snake Agent
     def __init__(self, optimiser_id, board_shape):
 
+        self.last_action = 0
+
+        self.num_consecutive_same_actions = 1
+
         # Initialise the Number of Games (Training Episodes) played by the Snake Agent
         self.num_games_episodes_played = 0
 
@@ -189,7 +196,7 @@ class SnakeAgent:
         if len(self.memory) >= BATCH_SIZE:
 
             # Sample a random Batch of examples from the Memory of the Snake Agent
-            mini_batch_sample = random.sample(self.memory, BATCH_SIZE)
+            mini_batch_sample = sample(self.memory, BATCH_SIZE)
 
         # If the Memory of the Snake Agent does not have
         # the sufficient number of examples for sampling a Batch
@@ -242,6 +249,21 @@ class SnakeAgent:
             # for the next Action to be taken
             next_action = (argmax(predicted_q_values) - 1)
 
+        if next_action == self.last_action:
+            self.num_consecutive_same_actions += 1
+        else:
+            self.num_consecutive_same_actions = 1
+
+        if self.num_consecutive_same_actions == 3:
+
+            while self.last_action == next_action:
+
+                # Compute a random move, to the next Action to
+                # be taken by the Snake Agent
+                next_action = random.randint(-1, 2)
+
+        self.last_action = next_action
+
         # The Snake Agent decided to turn to left
         if next_action == -1:
             print("- The Snake Agent will turn left!!!\n")
@@ -277,7 +299,7 @@ def train_snake_agent():
     current_score_record = 0
 
     # Initialise the Snake Agent
-    snake_agent = SnakeAgent(3, snake_game.board_state().shape)  # TODO - 3 is the ID for the Adam Optimiser
+    snake_agent = SnakeAgent(2, snake_game.board_state().shape)  # TODO - 2 is the ID for the Adam Optimiser
 
     # Print a blank line
     print("\n")
@@ -443,11 +465,14 @@ def train_snake_agent():
         # Update the Epsilon variable for the Randomness used to,
         # decide about Exploration and Exploitation, taking into account both of
         # the Minimum and Maximum values for it, as also, to the Decay factor to adjust it
+        """
         snake_agent.epsilon_randomness = \
             (MINIMUM_EPSILON_RANDOMNESS +
              ((MAXIMUM_EPSILON_RANDOMNESS - MINIMUM_EPSILON_RANDOMNESS) *
               exp(-DECAY_FACTOR_EPSILON_RANDOMNESS * current_num_game_episode)))
-
+        """
+        if snake_agent.epsilon_randomness > MINIMUM_EPSILON_RANDOMNESS:
+            snake_agent.epsilon_randomness -= DECAY_FACTOR_EPSILON_RANDOMNESS
 
 # The Main Function
 if __name__ == '__main__':
