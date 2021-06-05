@@ -78,7 +78,7 @@ class SnakeGame:
     # Function to create the Snake
     def create_snake(self):
 
-        # Create a snake, size 3, at random position and orientation
+        # Create a snake, size 5, at random position and orientation
         # NOTE: Use a threshold for the generated position,
         #       in order to ensure that the Snake is not too close to the Border of the Game;
         position_x = random_int(5, (self.width - 5))
@@ -87,25 +87,25 @@ class SnakeGame:
         # Generate a random integer number, to decide the initial direction of the Snake
         self.direction = random_int(0, 4)
 
-        # The list of the (x,y) coordinates filled by the snake
+        # The list of the (x,y) coordinates filled by the Snake
         self.snake = []
 
-        # For each Position
+        # For each Position of the Snakes' Body
         for _ in range(5):
 
-            # If the Snake decides to go up
+            # If the Snake is directed to up
             if self.direction == 0:
                 position_y = (position_y + 1)
 
-            # If the Snake decides to go left
+            # If the Snake directed to left
             elif self.direction == 1:
                 position_x = (position_x - 1)
 
-            # If the Snake decides to go down
+            # If the Snake directed to down
             elif self.direction == 2:
                 position_y = (position_y - 1)
 
-            # If the Snake decides to go right
+            # If the Snake directed to right
             elif self.direction == 3:
                 position_x = (position_x + 1)
 
