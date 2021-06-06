@@ -26,6 +26,8 @@ Snake Agent Module for the the Project
 import os as operative_system
 
 # Disable all the Debugging Logs from TensorFlow Library
+from keras.layers import Flatten
+
 operative_system.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # From the DateTime Library, import the DateTime Module
@@ -113,9 +115,9 @@ class SnakeAgentCNNModel:
                 # Add a 2D Convolutional Layer, for the 1s Hidden Layer (with the Input Shape),
                 # with a He Uniform Initializer
                 self.model.add(Conv2D(self.hidden_shapes[hidden_shape_index],
-                                      kernel_size=(KERNEL_SIZES_LIST[hidden_shape_index], KERNEL_SIZES_LIST[hidden_shape_index]),
-                                      strides=(STRIDES_LIST[hidden_shape_index], STRIDES_LIST[hidden_shape_index]),
+                                      kernel_size=(3, 3), strides=(1, 1),
                                       kernel_initializer=he_uniform_initializer, padding="same",
+                                      data_format="channels_first",
                                       input_shape=self.input_shape))
 
             # If it is not the 1s Hidden Layer Shape
@@ -124,15 +126,17 @@ class SnakeAgentCNNModel:
                 # Add a 2D Convolutional Layer, for the remaining Hidden Layers,
                 # with a He Uniform Initializer
                 self.model.add(Conv2D(self.hidden_shapes[hidden_shape_index],
-                                      kernel_size=(KERNEL_SIZES_LIST[hidden_shape_index], KERNEL_SIZES_LIST[hidden_shape_index]),
-                                      strides=(STRIDES_LIST[hidden_shape_index], STRIDES_LIST[hidden_shape_index]),
-                                      kernel_initializer=he_uniform_initializer, padding="same"))
+                                      kernel_size=(3, 3), strides=(1, 1),
+                                      kernel_initializer=he_uniform_initializer, padding="same",
+                                      data_format="channels_first"))
 
             # Add a Maximum 2D Pooling Layer
-            self.model.add(MaxPooling2D((2, 2)))
+            #self.model.add(MaxPooling2D((2, 2)))
 
             # Add a ReLU Activation Layer
             self.model.add(Activation("relu"))
+
+        self.model.add(Flatten())
 
         # Add a Dense Layer, with 256 Units, with the He Uniform Initializer
         self.model.add(Dense(256, kernel_initializer=he_uniform_initializer))
@@ -145,7 +149,7 @@ class SnakeAgentCNNModel:
                              kernel_initializer=he_uniform_initializer))
 
         # Add a Linear Activation Layer
-        self.model.add(Activation("linear"))
+#        self.model.add(Activation("linear"))
 
         # Compile the Sequential Model, with the Huber Loss, using the chosen Optimiser
         self.model.compile(loss=tensorflow.keras.losses.Huber(),
