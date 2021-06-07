@@ -474,6 +474,7 @@ def train_snake_agent():
         if snake_agent.epsilon_randomness > MINIMUM_EPSILON_RANDOMNESS:
             snake_agent.epsilon_randomness -= DECAY_FACTOR_EPSILON_RANDOMNESS
 
+
 # The Main Function
 if __name__ == '__main__':
 
