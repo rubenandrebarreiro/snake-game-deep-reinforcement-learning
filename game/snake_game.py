@@ -328,6 +328,7 @@ class SnakeGame:
 
         # If the Game is not done
         if not self.done:
+
             # Retrieve the Snake's Head
             x, y = self.snake[0]
 
