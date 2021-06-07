@@ -80,6 +80,8 @@ from numpy import exp
 # From the Random Library, import the Sample function
 from random import sample
 
+from game.agent.common.snake_examples_generator import generate_examples_data_for_replay_memory
+
 # From the Game.Others.Parameters_and_Arguments,
 # import the Sleep Time, in seconds for
 # a better presentation
@@ -138,7 +140,7 @@ from game.others.parameters_arguments import NUM_GAME_TRAINING_EPISODES
 class SnakeAgent:
 
     # Constructor for the Snake Agent
-    def __init__(self, optimiser_id, board_shape):
+    def __init__(self, optimiser_id, snake_game):
 
         self.last_action = 0
 
@@ -158,6 +160,17 @@ class SnakeAgent:
         # for the Deque structure with the Maximum Capacity defined for it
         self.memory = deque(maxlen=MAX_MEMORY)
 
+        ##########################
+        examples_data_for_replay_memory = \
+            generate_examples_data_for_replay_memory(snake_game.board_state.shape[0],
+                                                     snake_game.board_state.shape[1], border=1)
+
+        for example_data_for_replay_memory in examples_data_for_replay_memory:
+            snake_old_observation, snake_action, reward, snake_new_observation, done = \
+                example_data_for_replay_memory
+            self.remember(snake_old_observation, snake_action, reward, snake_new_observation, done)
+        ###########################
+
         # Create the Snake Agent's Q-Learning Trainer, given the CNN (Convolutional Neural Network) Models,
         # for the current and target observations
         self.snake_q_learning_trainer = \
@@ -168,13 +181,13 @@ class SnakeAgent:
         # for the current observations TODO - Confirm Input Shape and others
         self.snake_cnn_model_for_current_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, board_shape, [16, 32], 3)
+                               self.snake_q_learning_trainer.optimizer, snake_game.board_state.shape, [16, 32], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Model for the Snake Agent,
         # for the target observations TODO - Confirm Input Shape and others
         self.snake_cnn_model_for_target_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, board_shape, [16, 32], 3)
+                               self.snake_q_learning_trainer.optimizer, snake_game.board_state.shape, [16, 32], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Models for the Snake Agent,
         # for the current and target observations
@@ -299,7 +312,7 @@ def train_snake_agent():
     current_score_record = 0
 
     # Initialise the Snake Agent
-    snake_agent = SnakeAgent(2, snake_game.board_state().shape)  # TODO - 2 is the ID for the Adam Optimiser
+    snake_agent = SnakeAgent(2, snake_game)  # TODO - 2 is the ID for the Adam Optimiser
 
     # Print a blank line
     print("\n")
