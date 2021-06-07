@@ -81,41 +81,43 @@ def check_suicide_against_itself(snake_head_position, snake_body_positions):
     return snake_head_position in snake_body_positions
 
 
-def check_suicide_against_borders(snake_head_position, board_state_matrix):
+def check_suicide_against_borders(snake_head_position, board_state_matrix, board_state_border):
 
-    board_height = board_state_matrix.shape[0]
-    board_width = board_state_matrix.shape[1]
+    board_height = board_state_matrix.shape[0] - (2 * board_state_border)
+    board_width = board_state_matrix.shape[1] - (2 * board_state_border)
 
-    return snake_head_position[0] >= board_width or snake_head_position[0] < 0 or \
-        snake_head_position[1] >= board_height or snake_head_position[1] < 0
+    return snake_head_position[0] >= board_width or snake_head_position[0] <= 0 or \
+        snake_head_position[1] >= board_height or snake_head_position[1] <= 0
 
 
 def check_apple_eaten(snake_head_position, apple_position):
     return apple_position == snake_head_position
 
 
-def is_direction_dangerous(snake_head_position, snake_body_positions, current_direction_vector, board_state_matrix):
+def is_direction_dangerous(snake_head_position, snake_body_positions, current_direction_vector,
+                           board_state_matrix, board_state_border):
 
-    next_snake_head_positions = snake_head_position + current_direction_vector
+    next_snake_head_position = snake_head_position + current_direction_vector
 
-    return check_suicide_against_itself(next_snake_head_positions.to_list(), snake_body_positions) or \
-        check_suicide_against_borders(next_snake_head_positions, board_state_matrix)
+    return check_suicide_against_itself(next_snake_head_position.tolist(), snake_body_positions) or \
+        check_suicide_against_borders(next_snake_head_position, board_state_matrix, board_state_border)
 
 
-def get_dangerous_directions(snake_head_position, snake_body_positions, board_state_matrix):
+def get_dangerous_directions(snake_head_position, snake_body_positions, board_state_matrix, board_state_border):
 
     current_direction_vector = array(snake_head_position) - array(snake_body_positions[0])
+
     left_direction_vector = array([current_direction_vector[1], -current_direction_vector[0]])
     right_direction_vector = array([-current_direction_vector[1], current_direction_vector[0]])
 
     is_front_dangerous = is_direction_dangerous(snake_head_position, snake_body_positions,
-                                                current_direction_vector, board_state_matrix)
+                                                current_direction_vector, board_state_matrix, board_state_border)
 
     is_left_dangerous = is_direction_dangerous(snake_head_position, snake_body_positions,
-                                               left_direction_vector, board_state_matrix)
+                                               left_direction_vector, board_state_matrix, board_state_border)
 
     is_right_dangerous = is_direction_dangerous(snake_head_position, snake_body_positions,
-                                                right_direction_vector, board_state_matrix)
+                                                right_direction_vector, board_state_matrix, board_state_border)
 
     return current_direction_vector, is_front_dangerous, is_left_dangerous, is_right_dangerous
 
@@ -142,6 +144,8 @@ def get_angle_with_apple(snake_head_position, snake_body_positions, apple_positi
                              apple_direction_vector_normalized[1] * snake_direction_vector_normalized[1] +
                              apple_direction_vector_normalized[0] * snake_direction_vector_normalized[0]) / pi
 
+    print("angle", angle_with_apple)
+
     return angle_with_apple, snake_direction_vector,\
         apple_direction_vector_normalized, snake_direction_vector_normalized
 
@@ -149,9 +153,9 @@ def get_angle_with_apple(snake_head_position, snake_body_positions, apple_positi
 def generate_direction_to_apple(snake_head_position, snake_body_positions, angle_with_apple):
 
     if angle_with_apple > 0:
-        direction = 1
-    elif angle_with_apple < 0:
         direction = -1
+    elif angle_with_apple < 0:
+        direction = 1
     else:
         direction = 0
 
@@ -161,16 +165,17 @@ def generate_direction_to_apple(snake_head_position, snake_body_positions, angle
 def get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, direction):
 
     current_direction_vector = array(snake_head_position) - array(snake_body_positions[0])
-    left_direction_vector = array([current_direction_vector[1], -current_direction_vector[0]])
-    right_direction_vector = array([-current_direction_vector[1], current_direction_vector[0]])
+
+    left_direction_vector = array([-current_direction_vector[1], current_direction_vector[0]])
+    right_direction_vector = array([current_direction_vector[1], -current_direction_vector[0]])
 
     new_direction_vector = current_direction_vector
 
     if direction == -1:
-        new_direction_vector = left_direction_vector
+        new_direction_vector = right_direction_vector
 
     if direction == 1:
-        new_direction_vector = right_direction_vector
+        new_direction_vector = left_direction_vector
 
     button_direction = generate_button_direction(new_direction_vector)
 
