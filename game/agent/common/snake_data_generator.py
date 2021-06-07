@@ -94,7 +94,7 @@ def generate_training_data(width, height, food_amount=1, border=0, grass_growth=
     training_data_xs = []
     training_data_ys = []
 
-    num_training_games = 1
+    num_training_games = 80
     num_steps_per_game = 80
 
     snake_game = SnakeGame(width=width, height=height, border=1)
@@ -105,6 +105,13 @@ def generate_training_data(width, height, food_amount=1, border=0, grass_growth=
               .format((current_num_training_game + 1)))
 
         board_state, reward, done, score_dictionary = snake_game.reset()
+
+        #  TODO
+        """
+        apples_positions = snake_game.apples
+        print("maca at ", apples_positions[0])
+        print("snake: ", snake_game.snake)
+        """
 
         # Retrieve the name of the Action taken
         action_name = {-1: "Turn Left", 0: "Straight Ahead", 1: "Turn Right"}
@@ -130,10 +137,6 @@ def generate_training_data(width, height, food_amount=1, border=0, grass_growth=
 
             current_direction_vector, is_front_dangerous, is_left_dangerous, is_right_dangerous = \
                 get_dangerous_directions(snake_head_position, snake_body_positions, board_state, snake_game.border)
-
-            print("Front: ", is_front_dangerous)
-            print("Left: ", is_left_dangerous)
-            print("Right: ", is_right_dangerous)
 
             direction, button_direction, training_data_ys = \
                 generate_training_data_ys(snake_head_position, snake_body_positions,
@@ -171,37 +174,36 @@ def generate_training_data_ys(snake_head_position, snake_body_positions,
                               button_direction, generated_direction, training_data_ys,
                               is_front_dangerous, is_left_dangerous, is_right_dangerous):
 
-    print(generated_direction)
-
     if generated_direction == -1:
         if is_left_dangerous:
             if is_front_dangerous and not is_right_dangerous:
-                direction, button_direction = \
+                generated_direction, button_direction = \
                     get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, 1)
                 training_data_ys.append([0, 0, 1])
             elif not is_front_dangerous and is_right_dangerous:
-                direction, button_direction = \
+                generated_direction, button_direction = \
                     get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, 0)
                 training_data_ys.append([0, 1, 0])
             elif not is_front_dangerous and not is_right_dangerous:
-                direction, button_direction = \
+                generated_direction, button_direction = \
                     get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, 1)
                 training_data_ys.append([0, 0, 1])
+
         else:
             training_data_ys.append([1, 0, 0])
 
     elif generated_direction == 0:
         if is_front_dangerous:
             if is_left_dangerous and not is_right_dangerous:
-                direction, button_direction = \
+                generated_direction, button_direction = \
                     get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, 1)
                 training_data_ys.append([0, 0, 1])
             elif not is_left_dangerous and is_right_dangerous:
-                direction, button_direction = \
+                generated_direction, button_direction = \
                     get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, -1)
                 training_data_ys.append([1, 0, 0])
             elif not is_left_dangerous and not is_right_dangerous:
-                direction, button_direction = \
+                generated_direction, button_direction = \
                     get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, 1)
                 training_data_ys.append([0, 0, 1])
 
@@ -211,15 +213,15 @@ def generate_training_data_ys(snake_head_position, snake_body_positions,
     elif generated_direction == 1:
         if is_right_dangerous:
             if is_left_dangerous and not is_front_dangerous:
-                direction, button_direction = \
+                generated_direction, button_direction = \
                     get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, 0)
                 training_data_ys.append([0, 1, 0])
             elif not is_left_dangerous and is_front_dangerous:
-                direction, button_direction = \
+                generated_direction, button_direction = \
                     get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, -1)
                 training_data_ys.append([1, 0, 0])
-            elif not is_left_dangerous and is_front_dangerous:
-                direction, button_direction = \
+            elif not is_left_dangerous and not is_front_dangerous:
+                generated_direction, button_direction = \
                     get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, -1)
                 training_data_ys.append([1, 0, 0])
         else:

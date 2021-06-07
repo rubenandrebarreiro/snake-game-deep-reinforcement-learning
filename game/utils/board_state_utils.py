@@ -99,7 +99,7 @@ def is_direction_dangerous(snake_head_position, snake_body_positions, current_di
 
     next_snake_head_position = snake_head_position + current_direction_vector
 
-    return check_suicide_against_itself(next_snake_head_position.tolist(), snake_body_positions) or \
+    return check_suicide_against_itself(tuple(next_snake_head_position), snake_body_positions) or \
         check_suicide_against_borders(next_snake_head_position, board_state_matrix, board_state_border)
 
 
@@ -107,8 +107,8 @@ def get_dangerous_directions(snake_head_position, snake_body_positions, board_st
 
     current_direction_vector = array(snake_head_position) - array(snake_body_positions[0])
 
-    left_direction_vector = array([current_direction_vector[1], -current_direction_vector[0]])
-    right_direction_vector = array([-current_direction_vector[1], current_direction_vector[0]])
+    left_direction_vector = array([-current_direction_vector[1], current_direction_vector[0]])
+    right_direction_vector = array([current_direction_vector[1], -current_direction_vector[0]])
 
     is_front_dangerous = is_direction_dangerous(snake_head_position, snake_body_positions,
                                                 current_direction_vector, board_state_matrix, board_state_border)
@@ -144,8 +144,6 @@ def get_angle_with_apple(snake_head_position, snake_body_positions, apple_positi
                              apple_direction_vector_normalized[1] * snake_direction_vector_normalized[1] +
                              apple_direction_vector_normalized[0] * snake_direction_vector_normalized[0]) / pi
 
-    print("angle", angle_with_apple)
-
     return angle_with_apple, snake_direction_vector,\
         apple_direction_vector_normalized, snake_direction_vector_normalized
 
@@ -172,10 +170,10 @@ def get_direction_vector_to_the_apple(snake_head_position, snake_body_positions,
     new_direction_vector = current_direction_vector
 
     if direction == -1:
-        new_direction_vector = right_direction_vector
+        new_direction_vector = left_direction_vector
 
     if direction == 1:
-        new_direction_vector = left_direction_vector
+        new_direction_vector = right_direction_vector
 
     button_direction = generate_button_direction(new_direction_vector)
 
