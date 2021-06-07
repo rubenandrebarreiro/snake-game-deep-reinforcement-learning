@@ -56,7 +56,7 @@ from game.others.parameters_arguments import NUM_GPU_DEVICES
 # import the Snake Game object
 import numpy as np
 from keras import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Activation
 
 from game.snake_game import SnakeGame
 
@@ -94,7 +94,7 @@ def generate_training_data(width, height, food_amount=1, border=0, grass_growth=
     training_data_xs = []
     training_data_ys = []
 
-    num_training_games = 80
+    num_training_games = 2
     num_steps_per_game = 80
 
     snake_game = SnakeGame(width=width, height=height, border=1)
@@ -254,16 +254,16 @@ if TENSORFLOW_KERAS_HPC_BACKEND_SESSION:
     # TensorFlow Session for High-Performance Computing (with CPUs and GPUs)
     keras_backend.set_session(session)
 
-training_data_x, training_data_y = generate_training_data(30, 30, 1, 1, 0, 0)
+input_shape = (30, 30)
+training_data_x, training_data_y = generate_training_data(input_shape[0], input_shape[1], 1, 1, 0, 0)
 
 model = Sequential()
-model.add(Dense(units=9, input_dim=7))
-
-model.add(Dense(units=15, activation='relu'))
-model.add(Dense(output_dim=3,  activation='softmax'))
+model.add(Dense(units=16, input_shape=input_shape))
+model.add(Dense(units=32, activation='relu'))
+model.add(Dense(units=3, activation='softmax'))
 
 model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
-model.fit((np.array(training_data_x).reshape(-1, 7)),
+model.fit((np.array(training_data_x).reshape(-1, input_shape[0])),
           (np.array(training_data_y).reshape(-1, 3)), batch_size=256, epochs=3)
 
 model.save_weights('model.h5')
