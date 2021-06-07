@@ -79,6 +79,14 @@ GAMMA_DISCOUNT_FACTOR = 0.95
 # The size of the Batch of Examples of Observations
 BATCH_SIZE = 50
 
+# The List of Distances available to use for
+# the Heuristics for the pool of examples
+AVAILABLE_DISTANCES_LIST = ["EUCLIDEAN_NORM", "MANHATTAN"]
+
+# The Distance being currently used for
+# the Heuristics for the pool of examples
+DISTANCE_USED = AVAILABLE_DISTANCES_LIST[1]
+
 # The List of Optimisers available to use for
 # the CNN (Convolutional Neural Network) Model
 AVAILABLE_OPTIMISERS_LIST = ["SGD", "RMSPROP", "ADAM", "ADAGRAD", "ADADELTA", "ADAMAX"]
