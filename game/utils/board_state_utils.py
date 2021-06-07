@@ -20,6 +20,7 @@ SNAKE_BODY_COLOR = [1.0, 0.0, 0.0]
 
 
 def get_initial_positions(board_state_matrix):
+
     board_height = board_state_matrix.shape[0]
     board_width = board_state_matrix.shape[1]
 
@@ -131,6 +132,44 @@ def get_angle_with_apple(snake_head_position, snake_body_positions, apple_positi
         apple_direction_vector_normalized, snake_direction_vector_normalized
 
 
+def get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, last_direction):
+
+    current_direction_vector = array(snake_head_position) - array(snake_body_positions[0])
+    left_direction_vector = array([current_direction_vector[1], -current_direction_vector[0]])
+    right_direction_vector = array([-current_direction_vector[1], current_direction_vector[0]])
+
+    new_direction_vector = current_direction_vector
+
+    if last_direction == -1:
+        new_direction_vector = left_direction_vector
+
+    if last_direction == 1:
+        new_direction_vector = right_direction_vector
+
+    button_direction = generate_button_direction(new_direction_vector)
+
+    return last_direction, button_direction
+
+
+def generate_button_direction(new_direction_vector):
+
+    button_direction = 0
+
+    if new_direction_vector.tolist() == [-1, 0]:
+        button_direction = 0
+
+    elif new_direction_vector.tolist() == [1, 0]:
+        button_direction = 1
+
+    elif new_direction_vector.tolist() == [0, 1]:
+        button_direction = 2
+
+    elif new_direction_vector.tolist() == [0, -1]:
+        button_direction = 3
+
+    return button_direction
+
+
 def print_board_status(borders_positions, apples_positions, snake_head_position, snake_body_positions):
 
     print("\n")
@@ -155,6 +194,3 @@ def print_board_status(borders_positions, apples_positions, snake_head_position,
     print(*snake_body_positions, sep="\n")
 
     print("\n")
-
-
-
