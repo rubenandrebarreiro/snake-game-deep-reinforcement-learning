@@ -10,6 +10,8 @@ from math import pi
 
 from game.utils.plotting_helper import plot_board
 
+from game.others.parameters_arguments import AVAILABLE_DISTANCES_LIST
+
 BORDER_COLOR = [0.5, 0.5, 0.5]
 
 APPLE_COLOR = [0.0, 1.0, 0.0]
@@ -52,6 +54,18 @@ def get_initial_positions(board_state_matrix):
                 snake_body_positions.append([current_row, current_column])
 
     return borders_positions, apples_positions, snake_head_position, snake_body_positions
+
+
+def get_distance_from_snake_to_apple(snake_head_position, apple_position,
+                                     distance=AVAILABLE_DISTANCES_LIST[1]):
+
+    # It was chosen the Norm Euclidean Distance for the Heuristics
+    if distance == AVAILABLE_DISTANCES_LIST[0]:
+        return get_euclidean_norm_distance_from_snake_to_apple(snake_head_position, apple_position)
+
+    # It was chosen the Manhattan Distance for the Heuristics
+    elif distance == AVAILABLE_DISTANCES_LIST[1]:
+        return get_manhattan_distance_from_snake_to_apple(snake_head_position, apple_position)
 
 
 def get_euclidean_norm_distance_from_snake_to_apple(snake_head_position, apple_position):
@@ -132,7 +146,19 @@ def get_angle_with_apple(snake_head_position, snake_body_positions, apple_positi
         apple_direction_vector_normalized, snake_direction_vector_normalized
 
 
-def get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, last_direction):
+def generate_direction_to_apple(snake_head_position, snake_body_positions, angle_with_apple):
+
+    if angle_with_apple > 0:
+        direction = 1
+    elif angle_with_apple < 0:
+        direction = -1
+    else:
+        direction = 0
+
+    return get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, direction)
+
+
+def get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, direction):
 
     current_direction_vector = array(snake_head_position) - array(snake_body_positions[0])
     left_direction_vector = array([current_direction_vector[1], -current_direction_vector[0]])
@@ -140,15 +166,15 @@ def get_direction_vector_to_the_apple(snake_head_position, snake_body_positions,
 
     new_direction_vector = current_direction_vector
 
-    if last_direction == -1:
+    if direction == -1:
         new_direction_vector = left_direction_vector
 
-    if last_direction == 1:
+    if direction == 1:
         new_direction_vector = right_direction_vector
 
     button_direction = generate_button_direction(new_direction_vector)
 
-    return last_direction, button_direction
+    return direction, button_direction
 
 
 def generate_button_direction(new_direction_vector):
