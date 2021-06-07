@@ -1,5 +1,3 @@
-from game.snake_game import SnakeGame
-
 from numpy.linalg import norm
 
 from numpy import array
@@ -19,41 +17,6 @@ APPLE_COLOR = [0.0, 1.0, 0.0]
 SNAKE_HEAD_COLOR = [1.0, 1.0, 1.0]
 
 SNAKE_BODY_COLOR = [1.0, 0.0, 0.0]
-
-
-def get_initial_positions(board_state_matrix):
-
-    board_height = board_state_matrix.shape[0]
-    board_width = board_state_matrix.shape[1]
-
-    borders_positions = []
-    apples_positions = []
-    snake_head_position = None
-    snake_body_positions = []
-
-    for current_row in range(board_height):
-
-        for current_column in range(board_width):
-
-            current_color = board_state_matrix[current_row, current_column]
-
-            # The current position of the Board is part of the Border
-            if (current_color == BORDER_COLOR).all():
-                borders_positions.append([current_row, current_column])
-
-            # The current position of the Board is an Apple
-            if (current_color == APPLE_COLOR).all():
-                apples_positions.append([current_row, current_column])
-
-            # The current position of the Board is the Snake's Head
-            if (current_color == SNAKE_HEAD_COLOR).all():
-                snake_head_position = [current_row, current_column]
-
-            # The current position of the Board is part of the Snake's Body
-            if (current_color == SNAKE_BODY_COLOR).all():
-                snake_body_positions.append([current_row, current_column])
-
-    return borders_positions, apples_positions, snake_head_position, snake_body_positions
 
 
 def get_distance_from_snake_to_apple(snake_head_position, apple_position,
@@ -148,7 +111,7 @@ def get_angle_with_apple(snake_head_position, snake_body_positions, apple_positi
         apple_direction_vector_normalized, snake_direction_vector_normalized
 
 
-def generate_direction_to_apple(snake_head_position, snake_body_positions, angle_with_apple):
+def generate_direction_to_apple(angle_with_apple):
 
     if angle_with_apple > 0:
         direction = -1
@@ -157,46 +120,7 @@ def generate_direction_to_apple(snake_head_position, snake_body_positions, angle
     else:
         direction = 0
 
-    return get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, direction)
-
-
-def get_direction_vector_to_the_apple(snake_head_position, snake_body_positions, direction):
-
-    current_direction_vector = array(snake_head_position) - array(snake_body_positions[0])
-
-    left_direction_vector = array([-current_direction_vector[1], current_direction_vector[0]])
-    right_direction_vector = array([current_direction_vector[1], -current_direction_vector[0]])
-
-    new_direction_vector = current_direction_vector
-
-    if direction == -1:
-        new_direction_vector = left_direction_vector
-
-    if direction == 1:
-        new_direction_vector = right_direction_vector
-
-    button_direction = generate_button_direction(new_direction_vector)
-
-    return direction, button_direction
-
-
-def generate_button_direction(new_direction_vector):
-
-    button_direction = 0
-
-    if new_direction_vector.tolist() == [-1, 0]:
-        button_direction = 0
-
-    elif new_direction_vector.tolist() == [1, 0]:
-        button_direction = 1
-
-    elif new_direction_vector.tolist() == [0, 1]:
-        button_direction = 2
-
-    elif new_direction_vector.tolist() == [0, -1]:
-        button_direction = 3
-
-    return button_direction
+    return direction
 
 
 def print_board_status(borders_positions, apples_positions, snake_head_position, snake_body_positions):
