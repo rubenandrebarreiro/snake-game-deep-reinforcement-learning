@@ -228,7 +228,7 @@ class SnakeGame:
             reward += self.grass[x, y]
 
             # Set the Grass in the (x,y) coordinates of the Snake's Head, as 0
-            self.grass[y, x] = 0
+            self.grass[x, y] = 0
 
             # Sum the reward to the current Score
             self.score += reward
@@ -370,11 +370,11 @@ class SnakeGame:
 
 
 # Just run this if this file is the main
-if __name__ == '__main__':
+#if __name__ == '__main__':
 
     # Create the Board (m x n) for the Snake Game
-    game = SnakeGame(20, 20)
+#    game = SnakeGame(20, 20)
 
     # Print the information of the Board for the Snake Game,
     # in the current Step
-    game.print_state()
+#    game.print_state()

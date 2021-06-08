@@ -47,8 +47,8 @@ def generate_examples_data_for_replay_memory(width, height, food_amount=1, borde
 
     examples_data_for_replay_memory = []
 
-    num_training_games = 100
-    num_steps_per_game = 1000
+    num_training_games = 5000
+    num_steps_per_game = 2 * (width * height)
 
     snake_game = SnakeGame(width=width, height=height, food_amount=food_amount, border=border,
                            grass_growth=grass_growth, max_grass=max_grass)

@@ -163,7 +163,11 @@ class SnakeAgent:
         board_shape = (snake_game.width, snake_game.height)
 
         examples_data_for_replay_memory = \
-            generate_examples_data_for_replay_memory(board_shape[0], board_shape[1], border=1)
+            generate_examples_data_for_replay_memory(board_shape[0], board_shape[1],
+                                                     food_amount=snake_game.food_amount,
+                                                     border=snake_game.border,
+                                                     grass_growth=snake_game.grass_growth,
+                                                     max_grass=snake_game.max_grass)
 
         for example_data_for_replay_memory in examples_data_for_replay_memory:
 
@@ -184,13 +188,13 @@ class SnakeAgent:
         # for the current observations
         self.snake_cnn_model_for_current_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, input_shape, [16, 32, 64], 3)
+                               self.snake_q_learning_trainer.optimizer, input_shape, [32, 64, 128, 256], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Model for the Snake Agent,
         # for the target observations
         self.snake_cnn_model_for_target_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, input_shape, [16, 32, 64], 3)
+                               self.snake_q_learning_trainer.optimizer, input_shape, [32, 64, 128, 256], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Models for the Snake Agent,
         # for the current and target observations
@@ -300,7 +304,7 @@ class SnakeAgent:
 def train_snake_agent():
 
     # Create the Snake Game, for a Board Game of (30x30)
-    snake_game = SnakeGame(30, 30, border=1)
+    snake_game = SnakeGame(20, 20, food_amount=2, border=5, grass_growth=1, max_grass=5)
 
     # Initialise the list of current Scores made by the Snake Agent
     current_scores = []
