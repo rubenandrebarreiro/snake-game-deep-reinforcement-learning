@@ -162,15 +162,14 @@ class SnakeAgent:
 
         board_shape = (snake_game.width, snake_game.height)
 
-        ##########################
         examples_data_for_replay_memory = \
             generate_examples_data_for_replay_memory(board_shape[0], board_shape[1], border=1)
 
         for example_data_for_replay_memory in examples_data_for_replay_memory:
-            snake_old_observation, snake_action, reward, snake_new_observation, done = \
-                example_data_for_replay_memory
+
+            snake_old_observation, snake_action, reward, snake_new_observation, done = example_data_for_replay_memory
+
             self.remember(snake_old_observation, snake_action, reward, snake_new_observation, done)
-        ###########################
 
         # Create the Snake Agent's Q-Learning Trainer, given the CNN (Convolutional Neural Network) Models,
         # for the current and target observations
@@ -185,13 +184,13 @@ class SnakeAgent:
         # for the current observations
         self.snake_cnn_model_for_current_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, input_shape, [16, 32], 3)
+                               self.snake_q_learning_trainer.optimizer, input_shape, [16, 32, 64], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Model for the Snake Agent,
         # for the target observations
         self.snake_cnn_model_for_target_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, input_shape, [16, 32], 3)
+                               self.snake_q_learning_trainer.optimizer, input_shape, [16, 32, 64], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Models for the Snake Agent,
         # for the current and target observations

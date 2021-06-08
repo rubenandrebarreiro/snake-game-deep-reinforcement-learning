@@ -58,7 +58,7 @@ NUM_GAME_TRAINING_EPISODES = 30000
 
 # The initial value for the Epsilon variable for the Randomness used to,
 # decide about Exploration and Exploitation
-INITIAL_EPSILON_RANDOMNESS = 1
+INITIAL_EPSILON_RANDOMNESS = 0.05
 
 # The Maximum value for the Epsilon variable for the Randomness used to,
 # decide about Exploration and Exploitation

@@ -131,7 +131,7 @@ class SnakeAgentCNNModel:
                                       data_format="channels_first"))
 
             # Add a Maximum 2D Pooling Layer
-            #self.model.add(MaxPooling2D((2, 2)))
+            self.model.add(MaxPooling2D((2, 2)))
 
             # Add a ReLU Activation Layer
             self.model.add(Activation("relu"))
@@ -149,10 +149,10 @@ class SnakeAgentCNNModel:
                              kernel_initializer=he_uniform_initializer))
 
         # Add a Linear Activation Layer
-#        self.model.add(Activation("linear"))
+        #self.model.add(Activation("softmax"))
 
         # Compile the Sequential Model, with the Huber Loss, using the chosen Optimiser
-        self.model.compile(loss=tensorflow.keras.losses.Huber(),
+        self.model.compile(loss=tensorflow.keras.losses.MeanSquaredError(),
                            optimizer=self.optimizer_for_model,
                            metrics=["accuracy"])
 
