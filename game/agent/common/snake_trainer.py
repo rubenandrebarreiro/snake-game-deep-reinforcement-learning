@@ -131,8 +131,6 @@ class SnakeAgentQLearningTrainer:
             # as the New States of the Snake Agent
             new_states = array([new_observations])
 
-        print(current_states.shape)
-
         # Predict the Q-Values, according to the Current States of the Snake Agent
         q_values_list_for_current_states = \
             self.snake_cnn_model_for_current_observations.model.predict(current_states)

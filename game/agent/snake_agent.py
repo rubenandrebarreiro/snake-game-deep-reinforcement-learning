@@ -178,20 +178,20 @@ class SnakeAgent:
             SnakeAgentQLearningTrainer(learning_rate=INITIAL_LEARNING_RATES[optimiser_id],
                                        gamma_discount_factor=self.gamma_discount_factor)
 
-        board_shape_with_border = ((snake_game.board.shape[0] + 2 * snake_game.border),
-                                   (snake_game.board.shape[1] + 2 * snake_game.border))
+        input_shape = ((snake_game.board.shape[0] + 2 * snake_game.border),
+                       (snake_game.board.shape[1] + 2 * snake_game.border), 3)
 
         # Initialise the CNN (Convolutional Neural Network) Model for the Snake Agent,
         # for the current observations
         self.snake_cnn_model_for_current_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, board_shape_with_border, [16, 32], 3)
+                               self.snake_q_learning_trainer.optimizer, input_shape, [16, 32], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Model for the Snake Agent,
         # for the target observations
         self.snake_cnn_model_for_target_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, board_shape_with_border, [16, 32], 3)
+                               self.snake_q_learning_trainer.optimizer, input_shape, [16, 32], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Models for the Snake Agent,
         # for the current and target observations
