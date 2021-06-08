@@ -95,7 +95,9 @@ def generate_examples_data_for_replay_memory(width, height, food_amount=1, borde
                                                    is_front_dangerous, is_left_dangerous, is_right_dangerous)
 
             # Retrieve the old observation made by the Snake Agent
-            snake_old_observation = snake_game.board_state()
+            snake_old_observation = board_state
+
+            print(snake_old_observation.shape[0], snake_old_observation.shape[1])
 
             board_state, reward, done, score_dictionary = snake_game.play_step(direction)
 
