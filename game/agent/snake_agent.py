@@ -162,8 +162,8 @@ class SnakeAgent:
 
         ##########################
         examples_data_for_replay_memory = \
-            generate_examples_data_for_replay_memory(snake_game.board_state.shape[0],
-                                                     snake_game.board_state.shape[1], border=1)
+            generate_examples_data_for_replay_memory(snake_game.board.shape[0],
+                                                     snake_game.board.shape[1], border=1)
 
         for example_data_for_replay_memory in examples_data_for_replay_memory:
             snake_old_observation, snake_action, reward, snake_new_observation, done = \
@@ -181,13 +181,13 @@ class SnakeAgent:
         # for the current observations TODO - Confirm Input Shape and others
         self.snake_cnn_model_for_current_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, snake_game.board_state.shape, [16, 32], 3)
+                               self.snake_q_learning_trainer.optimizer, snake_game.board.shape, [16, 32], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Model for the Snake Agent,
         # for the target observations TODO - Confirm Input Shape and others
         self.snake_cnn_model_for_target_observations = \
             SnakeAgentCNNModel(AVAILABLE_OPTIMISERS_LIST[optimiser_id].lower(),
-                               self.snake_q_learning_trainer.optimizer, snake_game.board_state.shape, [16, 32], 3)
+                               self.snake_q_learning_trainer.optimizer, snake_game.board.shape, [16, 32], 3)
 
         # Initialise the CNN (Convolutional Neural Network) Models for the Snake Agent,
         # for the current and target observations

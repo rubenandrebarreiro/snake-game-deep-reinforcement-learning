@@ -47,8 +47,8 @@ def generate_examples_data_for_replay_memory(width, height, food_amount=1, borde
 
     examples_data_for_replay_memory = []
 
-    num_training_games = 2
-    num_steps_per_game = 14
+    num_training_games = 100
+    num_steps_per_game = 1000
 
     snake_game = SnakeGame(width=width, height=height, food_amount=food_amount, border=border,
                            grass_growth=grass_growth, max_grass=max_grass)
@@ -68,10 +68,10 @@ def generate_examples_data_for_replay_memory(width, height, food_amount=1, borde
         """
 
         # Retrieve the name of the Action taken
-        action_name = {-1: "Turn Left", 0: "Straight Ahead", 1: "Turn Right"}
+        #action_name = {-1: "Turn Left", 0: "Straight Ahead", 1: "Turn Right"}
 
         # Plot the Board of the Snake Game for the initial state
-        plot_board("{}.png".format(0), board_state, "Start")
+        #plot_board("{}.png".format(0), board_state, "Start")
 
         for current_num_step in range(num_steps_per_game):
 
@@ -86,7 +86,7 @@ def generate_examples_data_for_replay_memory(width, height, food_amount=1, borde
                 apple_direction_vector_normalized, snake_direction_vector_normalized = \
                 get_angle_with_apple(snake_head_position, snake_body_positions, apples_positions[0])
 
-            generated_direction, button_direction = generate_direction_to_apple(angle_with_apple)
+            generated_direction = generate_direction_to_apple(angle_with_apple)
 
             current_direction_vector, is_front_dangerous, is_left_dangerous, is_right_dangerous = \
                 get_dangerous_directions(snake_head_position, snake_body_positions, board_state, snake_game.border)
@@ -117,7 +117,7 @@ def generate_examples_data_for_replay_memory(width, height, food_amount=1, borde
                 break
 
             # Plot the Board of the Game for the Action taken
-            plot_board("{}.png".format(current_num_step+1), board_state, action_name[direction])
+            #plot_board("{}.png".format(current_num_step+1), board_state, action_name[direction])
 
             # Retrieve the current Score from the Dictionary of the Score
             current_score = score_dictionary["Score"]
@@ -161,5 +161,5 @@ def update_generated_direction(generated_direction, is_front_dangerous, is_left_
 
 
 # Just for testing
-input_shape = (30, 30)
-training_data_x, training_data_y = generate_examples_data_for_replay_memory(input_shape[0], input_shape[1], 1, 1, 0, 0)
+#input_shape = (30, 30)
+#training_data_x, training_data_y = generate_examples_data_for_replay_memory(input_shape[0], input_shape[1], 1, 1, 0, 0)
